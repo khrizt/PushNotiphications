@@ -67,7 +67,7 @@ class Response extends BaseResponse
 
         $response->errorCode = $decodedBody->reason;
 
-        if ($status == 410) {
+        if ($response->status == 410) {
             $timestamp = Datetime::createFromFormat($decodedBody->timestamp, 'U');
             if ($timestamp === false) {
                 throw new InvalidResponseException(json_last_error_msg(), $body);
