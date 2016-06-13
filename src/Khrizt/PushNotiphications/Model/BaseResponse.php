@@ -12,7 +12,7 @@ abstract class BaseResponse
 
         if (!empty($rawHeaders)) {
             foreach (explode("\r\n", $rawHeaders) as $key => $header) {
-                if ($i === 0) {
+                if ($key === 0) {
                     $headers['httpCode'] = $header;
                 } else {
                     list($key, $value) = explode(': ', $line);
