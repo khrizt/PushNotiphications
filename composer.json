@@ -1,0 +1,31 @@
+{
+    "name": "khrizt/push-notiphications",
+    "description": "Push notifications library for Apns and Gcm for PHP",
+    "keywords": ["apple", "iphone", "apns", "android", "gcm", "notification", "message", "push", "pusher", "notiphications"],
+    "homepage": "https://github.com/khrizt/PushNotiphications",
+    "type": "standalone",
+    "license": "Apache License 2.0",
+    "authors": [
+        {
+            "name": "Christian Fuentes",
+            "email": "yo@christianfuentes.net"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/khrizt/PushNotiphications/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "symfony/console": "~2.3"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "bin": ["send"],
+    "autoload": {
+        "psr-0": {
+            "Khrizt": "src/"
+        }
+    }
+}
