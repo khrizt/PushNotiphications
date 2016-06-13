@@ -51,7 +51,7 @@ class Response extends BaseResponse
         $response->headers = parent::parseHeaders($headers);
         $response->status = $response->headers['httpCode'];
 
-        if ($status == 200) {
+        if ($response->status == 200) {
             $response->notificationId = $response->headers['apns-id'];
 
             return $response;

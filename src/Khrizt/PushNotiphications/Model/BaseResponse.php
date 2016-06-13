@@ -16,7 +16,7 @@ abstract class BaseResponse
                     // get status from headers
                     $headers['httpCode'] = str_replace('HTTP/2 ', '', $header);
                 } elseif (!empty(trim($line))) {
-                    list($key, $value) = explode(': ', $line);
+                    list($key, $value) = explode(': ', $header);
                     $headers[$key] = $value;
                 }
             }
