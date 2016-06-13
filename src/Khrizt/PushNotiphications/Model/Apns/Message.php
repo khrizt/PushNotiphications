@@ -507,7 +507,7 @@ class Message
         $headers = array();
         foreach ($params as $key => $value) {
             if (!is_null($value) && !is_null($this->headersMapField($key))) {
-                $headers[$this->headersMapField($key)] = $value;
+                $headers[] = $this->headersMapField($key).': '.$value;
             }
         }
 
