@@ -13,8 +13,9 @@ abstract class BaseResponse
         if (!empty($rawHeaders)) {
             foreach (explode("\r\n", $rawHeaders) as $key => $header) {
                 if ($key === 0) {
-                    $headers['httpCode'] = $header;
-                } else {
+                    // get status from headers
+                    $headers['httpCode'] = str_replace('HTTP/2 ', '', $header);
+                } elseif (!empty(trim($line))) {
                     list($key, $value) = explode(': ', $line);
                     $headers[$key] = $value;
                 }

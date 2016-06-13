@@ -3,6 +3,7 @@
 namespace Khrizt\PushNotiphications\Model\Apns;
 
 use Khrizt\PushNotiphications\Model\BaseResponse;
+use Khrizt\PushNotiphications\Exceptions\InvalidResponseException;
 use Datetime;
 
 class Response extends BaseResponse
@@ -63,13 +64,11 @@ class Response extends BaseResponse
         }
 
         $response->errorCode = $decodedBody->reason;
-        $response->errorMessage = $this->errorTexts[$this->errorCode];
 
         if ($status == 410) {
             $timestamp = Datetime::createFromFormat($decodedBody->timestamp, 'U');
             if ($timestamp === false) {
-                // throw new InvalidResponseException(json_last_error_msg(), $body);
-                // exception?
+                throw new InvalidResponseException(json_last_error_msg(), $body);
             }
         }
 
@@ -98,6 +97,6 @@ class Response extends BaseResponse
 
     public function getErrorMessage()
     {
-        return $this->errorMessage;
+        return $this->errorTexts[$this->errorCode];
     }
 }
