@@ -58,15 +58,12 @@ class Apns
             curl_setopt($this->handler, CURLOPT_URL, $this->apnsUrl.$device->getToken());
 
             $rawResponse = curl_exec($this->handler);
-            var_dump('rawResponse', $rawResponse);
-
-            $status = curl_getinfo($this->handler, CURLINFO_HTTP_CODE);
 
             $headerSize = curl_getinfo($this->handler, CURLINFO_HEADER_SIZE);
             $responseHeaders = substr($rawResponse, 0, $headerSize);
             $responseBody = substr($rawResponse, $headerSize);
 
-            $responseCollection->append(Response::parse($status, $responseHeaders, $responseBody));
+            $responseCollection->append(Response::parse($device->getToken(), $responseHeaders, $responseBody));
         }
 
         return $responseCollection;

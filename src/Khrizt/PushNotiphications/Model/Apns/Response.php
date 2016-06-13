@@ -36,6 +36,8 @@ class Response extends BaseResponse
 
     protected $notificationId;
 
+    protected $token;
+
     protected $status;
 
     protected $timestamp;
@@ -44,10 +46,10 @@ class Response extends BaseResponse
 
     protected $errorMessage;
 
-    public static function parse($status, $headers, $body)
+    public static function parse($token, $headers, $body)
     {
-        var_dump($status, $headers, $body);
         $response = new self();
+        $response->token = $token;
         $response->headers = parent::parseHeaders($headers);
         $response->status = $response->headers['httpCode'];
 
@@ -78,6 +80,11 @@ class Response extends BaseResponse
     public function getNotificationId()
     {
         return $this->notificationId;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
     }
 
     public function getStatus()

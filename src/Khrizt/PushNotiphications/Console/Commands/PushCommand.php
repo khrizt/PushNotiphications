@@ -18,6 +18,10 @@ use Khrizt\PushNotiphications\Model\Apns\Message as ApnsMessage;
  */
 class PushCommand extends Command
 {
+    protected $input;
+
+    protected $output;
+
     /**
      * @see Command
      */
@@ -86,6 +90,9 @@ class PushCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
+        $this->output = $output;
+
         $adapter = $input->getArgument('adapter');
         $token = $input->getArgument('token');
         $message = $input->getArgument('message');
@@ -119,6 +126,10 @@ class PushCommand extends Command
         $collection->append($device);
 
         $client = new Apns($env, $certificate, $certificatePassphrase);
-        print_r($client->send($apnsMessage, $collection));
+        $responseCollection = $client->send($apnsMessage, $collection);
+
+        foreach ($responseCollection as $response) {
+            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.$response->getStatus().($response->getStatus() === 200 ?: '. Error message: '.$response->getErrorMessage()));
+        }
     }
 }
