@@ -51,7 +51,7 @@ class Apns
         if (!is_null($this->passPhrase)) {
             curl_setopt($this->handler, CURLOPT_SSLCERTPASSWD, $this->passPhrase);
         }
-        curl_setopt($this->handler, CURLOPT_VERBOSE, true);
+        // curl_setopt($this->handler, CURLOPT_VERBOSE, true);
 
         $responseCollection = new Collection();
         foreach ($deviceCollection as $device) {
