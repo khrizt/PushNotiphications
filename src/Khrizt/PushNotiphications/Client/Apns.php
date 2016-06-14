@@ -83,8 +83,11 @@ class Apns
         curl_setopt($this->handler, CURLOPT_POSTFIELDS, $message->getPayload());
         curl_setopt($this->handler, CURLOPT_HTTPHEADER, $message->getHeaders());
         curl_setopt($this->handler, CURLOPT_SSLCERT, $this->certificate);
+        curl_setopt($this->handler, CURLOPT_SSLKEY, $this->certificate);
+        curl_setopt($this->handler, CURLOPT_SSLKEYTYPE, 'PEM');
         if (!is_null($this->passphrase)) {
             curl_setopt($this->handler, CURLOPT_SSLCERTPASSWD, $this->passphrase);
+            curl_setopt($this->handler, CURLOPT_SSLKEYPASSWD, $this->passphrase);
         }
         // curl_setopt($this->handler, CURLOPT_VERBOSE, true);
 
