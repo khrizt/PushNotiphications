@@ -256,7 +256,7 @@ class Message implements MessageInterface
     protected function mapField(string $field) : string
     {
         if (!array_key_exists($field, $this->fieldMapping)) {
-            return;
+            return '';
         }
 
         return $this->fieldMapping[$field];
@@ -280,7 +280,7 @@ class Message implements MessageInterface
                 }
             } elseif ($key === 'data' && count($value) == 0) {
                 unset($payload['data']);
-            } elseif (!is_null($this->mapField($key)) && !is_null($value)) {
+            } elseif (!empty($this->mapField($key)) && !is_null($value)) {
                 $payload[$this->mapField($key)] = $value;
             }
         }

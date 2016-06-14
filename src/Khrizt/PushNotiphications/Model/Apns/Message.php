@@ -451,7 +451,7 @@ class Message implements MessageInterface
     protected function payloadMapField(string $field) : string
     {
         if (!array_key_exists($field, $this->payloadFieldMapping)) {
-            return;
+            return '';
         }
 
         return $this->payloadFieldMapping[$field];
@@ -467,7 +467,7 @@ class Message implements MessageInterface
     protected function headersMapField(string $field) : string
     {
         if (!array_key_exists($field, $this->headersFieldMapping)) {
-            return;
+            return '';
         }
 
         return $this->headersFieldMapping[$field];
@@ -484,7 +484,7 @@ class Message implements MessageInterface
 
         $payload = ['aps' => ['alert' => []]];
         foreach ($params as $key => $value) {
-            if (!is_null($value) && !is_null($this->payloadMapField($key))) {
+            if (!is_null($value) && !empty($this->payloadMapField($key))) {
                 $payload['aps']['alert'][$this->payloadMapField($key)] = $value;
             }
         }
@@ -507,7 +507,7 @@ class Message implements MessageInterface
 
         $headers = array();
         foreach ($params as $key => $value) {
-            if (!is_null($value) && !is_null($this->headersMapField($key))) {
+            if (!is_null($value) && !empty($this->headersMapField($key))) {
                 $headers[] = $this->headersMapField($key).': '.$value;
             }
         }
