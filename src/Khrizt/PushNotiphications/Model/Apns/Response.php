@@ -20,7 +20,7 @@ class Response implements ResponseInterface
      *
      * @var string
      */
-    protected $notificationId;
+    protected $notificationId = '';
 
     /**
      * Device token.
@@ -48,7 +48,7 @@ class Response implements ResponseInterface
      *
      * @var string
      */
-    protected $errorCode;
+    protected $errorCode = '';
 
     /**
      * Error descriptions.
