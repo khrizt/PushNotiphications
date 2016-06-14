@@ -70,8 +70,10 @@ For all these cases, remove this registration token from the app server and stop
     public static function parse(string $token, array $body) : Response
     {
         $response = new self();
-        $response->notificationId = $body['message_id'];
         $response->token = $token;
+        if (array_key_exists('message_id', $body)) {
+            $response->notificationId = $body['message_id'];
+        }
         if (array_key_exists('registration_id', $body)) {
             $response->canonicalId = $body['registration_id'];
         }
