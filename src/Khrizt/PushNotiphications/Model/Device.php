@@ -70,7 +70,7 @@ class Device
      *
      * @return self
      */
-    private function setBadge(int $badge) : Device
+    public function setBadge(int $badge) : Device
     {
         $this->badge = $badge;
 
@@ -94,7 +94,7 @@ class Device
      *
      * @return self
      */
-    private function setSound(string $sound) : Device
+    public function setSound(string $sound) : Device
     {
         $this->sound = $sound;
 
