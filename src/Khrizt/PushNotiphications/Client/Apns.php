@@ -39,6 +39,13 @@ class Apns
     protected $passphrase;
 
     /**
+     * Debug flag.
+     *
+     * @var bool
+     */
+    protected $debug = false;
+
+    /**
      * Constructor.
      *
      * @param string $environment Environment
@@ -90,12 +97,17 @@ class Apns
             curl_setopt($this->handler, CURLOPT_SSLCERTPASSWD, $this->passphrase);
             curl_setopt($this->handler, CURLOPT_SSLKEYPASSWD, $this->passphrase);
         }
-        // curl_setopt($this->handler, CURLOPT_VERBOSE, true);
+        if ($this->debug) {
+            curl_setopt($this->handler, CURLOPT_VERBOSE, true);
+        }
 
         $responseCollection = new Collection();
         foreach ($deviceCollection as $device) {
             if ($device->getBadge() > 0) {
                 $payload['aps']['badge'] = $device->getBadge();
+            }
+            if (!empty($device->getSound())) {
+                $payload['aps']['sound'] = $device->getSound();
             }
             curl_setopt($this->handler, CURLOPT_POSTFIELDS, json_encode($payload, JSON_UNESCAPED_UNICODE));
             curl_setopt($this->handler, CURLOPT_URL, $this->apnsUrl.$device->getToken());
@@ -110,5 +122,19 @@ class Apns
         }
 
         return $responseCollection;
+    }
+
+    /**
+     * Sets the Debug flag.
+     *
+     * @param bool $debug the debug
+     *
+     * @return self
+     */
+    public function setDebug(bool $debug) : Apns
+    {
+        $this->debug = $debug;
+
+        return $this;
     }
 }

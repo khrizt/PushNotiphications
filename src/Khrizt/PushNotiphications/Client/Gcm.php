@@ -30,6 +30,13 @@ class Gcm extends AbstractClient
      */
     protected $handler;
 
+    /**
+     * Debug flag.
+     *
+     * @var bool
+     */
+    protected $debug = false;
+
     public function __construct(string $apiKey)
     {
         $this->apiKey = $apiKey;
@@ -59,7 +66,9 @@ class Gcm extends AbstractClient
         ]);
         curl_setopt($this->handler, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($this->handler, CURLOPT_URL, self::GCM_URL);
-        // curl_setopt($this->handler, CURLOPT_VERBOSE, true);
+        if ($this->debug) {
+            curl_setopt($this->handler, CURLOPT_VERBOSE, true);
+        }
 
         $responseCollection = new Collection();
         $count = 0;
@@ -106,5 +115,19 @@ class Gcm extends AbstractClient
         }
 
         return $responseCollection;
+    }
+
+    /**
+     * Sets the Debug flag.
+     *
+     * @param bool $debug the debug
+     *
+     * @return self
+     */
+    public function setDebug(bool $debug) : Gcm
+    {
+        $this->debug = $debug;
+
+        return $this;
     }
 }
