@@ -3,7 +3,7 @@
 namespace Khrizt\PushNotiphications\Model\Apns;
 
 use Khrizt\PushNotiphications\Model\BaseResponse;
-use Khrizt\PushNotiphications\Exceptions\InvalidResponseException;
+use Khrizt\PushNotiphications\Exception\Apns\InvalidResponseException;
 use Datetime;
 
 class Response extends BaseResponse
@@ -51,7 +51,7 @@ class Response extends BaseResponse
         $response = new self();
         $response->token = $token;
         $response->headers = parent::parseHeaders($headers);
-        $response->status = $response->headers['httpCode'];
+        $response->status = (int) $response->headers['httpCode'];
 
         if ($response->status == 200) {
             $response->notificationId = $response->headers['apns-id'];

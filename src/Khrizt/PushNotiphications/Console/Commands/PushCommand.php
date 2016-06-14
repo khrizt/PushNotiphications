@@ -8,10 +8,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Khrizt\PushNotiphications\Client\Apns;
+use Khrizt\PushNotiphications\Client\Gcm;
 use Khrizt\PushNotiphications\Collection\Collection;
 use Khrizt\PushNotiphications\Constants;
 use Khrizt\PushNotiphications\Model\Device;
 use Khrizt\PushNotiphications\Model\Apns\Message as ApnsMessage;
+use Khrizt\PushNotiphications\Model\Gcm\Message as GcmMessage;
 
 /**
  * PushCommand.
@@ -67,6 +69,13 @@ class PushCommand extends Command
                 null
             )
             ->addOption(
+                'title',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Title (for GCM adapter)',
+                ''
+            )
+            ->addOption(
                 'apiKey',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -96,9 +105,9 @@ class PushCommand extends Command
         $adapter = $input->getArgument('adapter');
         $token = $input->getArgument('token');
         $message = $input->getArgument('message');
-        $env = $input->getOption('env');
 
         if ($adapter === 'apns') {
+            $env = $input->getOption('env');
             $certificate = $input->getOption('certificate');
             if (!file_exists($certificate)) {
                 throw new \InvalidArgumentException('Certificate does not exists');
@@ -107,7 +116,9 @@ class PushCommand extends Command
             $topic = $input->getOption('topic');
             $this->sendApnsNotification($token, $message, $certificate, $env, $certificatePassphrase, $topic);
         } elseif ($adapter === 'gcm') {
-            //
+            $apiKey = $input->getOption('apiKey');
+            $title = $input->getOption('title');
+            $this->sendGcmNotification($token, $title, $message, $apiKey);
         } else {
             throw new \InvalidArgumentException('Adapter '.$adapter.' is not a valid value. Values are: apns and gcm');
         }
@@ -130,6 +141,29 @@ class PushCommand extends Command
 
         foreach ($responseCollection as $response) {
             $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.$response->getStatus().($response->getStatus() == 200 ?: '. Error message: '.$response->getErrorMessage()));
+        }
+    }
+
+    public function sendGcmNotification(string $token, string $title, string $message, string $apiKey)
+    {
+        $gcmMessage = new GcmMessage();
+        $gcmMessage->getNotification()->setBody($message);
+        $gcmMessage->setData([
+            'custom' => [
+                'notification_title' => $title,
+            ],
+            'message' => $message,
+        ]);
+
+        $device = new Device($token);
+        $collection = new Collection();
+        $collection->append($device);
+
+        $client = new Gcm($apiKey);
+        $responseCollection = $client->send($gcmMessage, $collection);
+
+        foreach ($responseCollection as $response) {
+            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.(is_null($response->getErrorCode()) ? 'OK' : ' Error. Error message: '.$response->getErrorMessage()));
         }
     }
 }

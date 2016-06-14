@@ -1,6 +1,6 @@
 <?php
 
-namespace Khrizt\PushNotiphications\Exceptions;
+namespace Khrizt\PushNotiphications\Exception\Apns;
 
 use Exception;
 

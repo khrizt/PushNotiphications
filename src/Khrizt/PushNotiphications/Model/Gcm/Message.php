@@ -2,10 +2,16 @@
 
 namespace Khrizt\PushNotiphications\Model\Gcm;
 
+use Khrizt\PushNotiphications\Model\Message as MessageInterface;
+
 // https://developers.google.com/cloud-messaging/concept-options
 // //https://developers.google.com/cloud-messaging/http-server-ref
 // 
-class Message
+
+/**
+ * Message object.
+ */
+class Message implements MessageInterface
 {
     /**
      * Collapse key.
@@ -53,6 +59,7 @@ class Message
         'delayWhileIdle' => 'delay_while_idle',
         'collapseKey' => 'collapse_key',
         'timeToLive' => 'time_to_live',
+        'data' => 'data',
     ];
 
     /**
@@ -108,9 +115,9 @@ class Message
     public function setData(array $data)
     {
         foreach ($data as $key => $value) {
-            if (!is_scalar($key) || !is_scalar($value)) {
+            /*if (!is_scalar($key) || !is_scalar($value)) {
                 throw new \InvalidArgumentException('Key / value pair '.$key.' / '.$value.' contains non-scalar values');
-            }
+            }*/
         }
         $this->data = $data;
     }
@@ -149,21 +156,26 @@ class Message
     protected function mapField($field)
     {
         if (!array_key_exists($field, $this->fieldMapping)) {
-            return $field;
+            return;
         }
 
-        return $this->fieldMapping[$key];
+        return $this->fieldMapping[$field];
     }
 
-    public function getPayload()
+    public function getNoEncodedPayload()
     {
         $params = get_object_vars($this);
 
         $payload = array();
         foreach ($params as $key => $value) {
             if ($key === 'notification' && !is_null($value)) {
-                $payload[$this->mapField($key)] = $this->notification->getPayload();
-            } elseif (!is_null($value)) {
+                $notificationPayload = $this->notification->getNoEncodedPayload();
+                if (!empty($notificationPayload)) {
+                    $payload[$key] = $this->notification->getNoEncodedPayload();
+                }
+            } elseif ($key === 'data' && count($value) == 0) {
+                unset($payload['data']);
+            } elseif (!is_null($this->mapField($key)) && !is_null($value)) {
                 $payload[$this->mapField($key)] = $value;
             }
         }
@@ -172,6 +184,11 @@ class Message
             throw new EmptyMessageException();
         }
 
-        return json_encode($payload);
+        return $payload;
+    }
+
+    public function getPayload()
+    {
+        return json_encode($this->getNoEncodedPayload());
     }
 }

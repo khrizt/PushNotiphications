@@ -17,6 +17,8 @@ class Notification
         }
 
         $this->title = $title;
+
+        return $this;
     }
 
     public function getTitle($title)
@@ -31,6 +33,8 @@ class Notification
         }
 
         $this->body = $body;
+
+        return $this;
     }
 
     public function getBody($body)
@@ -45,10 +49,29 @@ class Notification
         }
 
         $this->icon = $icon;
+
+        return $this;
     }
 
     public function getIcon($icon)
     {
         return $this->icon;
+    }
+
+    public function getPayload()
+    {
+        return json_encode($this->getNoEncodedPayload());
+    }
+
+    public function getNoEncodedPayload()
+    {
+        $params = get_object_vars($this);
+        foreach ($params as $key => $value) {
+            if (is_null($value)) {
+                unset($params[$key]);
+            }
+        }
+
+        return $params;
     }
 }

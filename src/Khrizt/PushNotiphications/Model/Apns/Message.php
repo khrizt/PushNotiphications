@@ -3,11 +3,12 @@
 namespace Khrizt\PushNotiphications\Model\Apns;
 
 use Khrizt\PushNotiphications\Exception\EmptyMessageException;
+use Khrizt\PushNotiphications\Model\Message as MessageInterface;
 
 /**
  * Message object.
  */
-class Message
+class Message implements MessageInterface
 {
     /**
      * Notification id.

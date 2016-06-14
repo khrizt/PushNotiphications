@@ -2,10 +2,10 @@
 
 namespace Khrizt\PushNotiphications\Client;
 
-use Khrizt\PushNotiphications\Model\Apns\Message;
+use Khrizt\PushNotiphications\Model\Message as MessageInterface;
 use Khrizt\PushNotiphications\Model\Apns\Response;
 use Khrizt\PushNotiphications\Collection\Collection;
-use Khrizt\PushNotiphications\Exceptions\NoHttp2SupportException;
+use Khrizt\PushNotiphications\Exception\Apns\NoHttp2SupportException;
 use Khrizt\PushNotiphications\Constants;
 
 class Apns
@@ -30,7 +30,7 @@ class Apns
         $this->passPhrase = $passPhrase;
     }
 
-    public function send(Message $message, Collection $deviceCollection) : Collection
+    public function send(MessageInterface $message, Collection $deviceCollection) : Collection
     {
         if (!defined('CURL_HTTP_VERSION_2_0')) {
             throw new NoHttp2SupportException();
