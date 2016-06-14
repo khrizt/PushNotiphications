@@ -95,7 +95,7 @@ class Response implements ResponseInterface
         $response = new self();
         $response->token = $token;
         $response->headers = self::parseHeaders($headers);
-        $response->status = (int) $response->headers['httpCode'];
+        $response->status = $response->headers['httpCode'];
 
         if ($response->status == 200) {
             $response->notificationId = $response->headers['apns-id'];
@@ -136,7 +136,7 @@ class Response implements ResponseInterface
             foreach (explode("\r\n", $rawHeaders) as $key => $header) {
                 if ($key === 0) {
                     // get status from headers
-                    $headers['httpCode'] = trim(str_replace('HTTP/2 ', '', $header));
+                    $headers['httpCode'] = (int) substr($header, -3);
                 } elseif (!empty(trim($header))) {
                     list($key, $value) = explode(':', $header);
                     $headers[trim($key)] = trim($value);
