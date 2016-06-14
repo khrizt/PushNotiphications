@@ -138,8 +138,8 @@ class Response implements ResponseInterface
                     // get status from headers
                     $headers['httpCode'] = trim(str_replace('HTTP/2 ', '', $header));
                 } elseif (!empty(trim($header))) {
-                    list($key, $value) = explode(': ', $header);
-                    $headers[$key] = trim($value);
+                    list($key, $value) = explode(':', $header);
+                    $headers[trim($key)] = trim($value);
                 }
             }
         }
