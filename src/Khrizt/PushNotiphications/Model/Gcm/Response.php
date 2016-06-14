@@ -109,7 +109,7 @@ For all these cases, remove this registration token from the app server and stop
      */
     public function getIsOk() : bool
     {
-        return is_null($this->errorCode);
+        return empty($this->errorCode);
     }
 
     /**
