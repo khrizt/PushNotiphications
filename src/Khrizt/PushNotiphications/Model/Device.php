@@ -12,12 +12,12 @@ class Device
     /**
      * @var int
      */
-    private $badge;
+    private $badge = 0;
 
     /**
      * @var string
      */
-    private $sound;
+    private $sound = '';
 
     /**
      * Constructor.
