@@ -95,7 +95,7 @@ class Apns
         $responseCollection = new Collection();
         foreach ($deviceCollection as $device) {
             if ($device->getBadge() > 0) {
-                $payload['aps']['alert']['badge'] = $device->getBadge();
+                $payload['aps']['badge'] = $device->getBadge();
             }
             curl_setopt($this->handler, CURLOPT_POSTFIELDS, json_encode($payload, JSON_UNESCAPED_UNICODE));
             curl_setopt($this->handler, CURLOPT_URL, $this->apnsUrl.$device->getToken());
