@@ -2,10 +2,15 @@
 
 namespace Khrizt\PushNotiphications\Model\Gcm;
 
-use Khrizt\PushNotiphications\Model\BaseResponse;
+use Khrizt\PushNotiphications\Model\ResponseInterface;
 
-class Response extends BaseResponse
+class Response implements ResponseInterface
 {
+    /**
+     * List of error messages from GCM api.
+     *
+     * @var array
+     */
     protected $errorTexts = [
         'MissingRegistration' => 'Missing Registration Token. Check that the request contains a registration token (in the registration_id in a plain text message, or in the to or registration_ids field in JSON).',
         'InvalidRegistration' => 'Invalid Registration Token. Check the format of the registration token you pass to the server. Make sure it matches the registration token the client app receives from registering with GCM. Do not truncate or add additional characters.',
@@ -26,14 +31,42 @@ For all these cases, remove this registration token from the app server and stop
         'TopicsMessageRateExceeded' => 'Topic Message Rate Exceeded. The rate of messages to subscribers to a particular topic is too high. Reduce the number of messages sent for this topic, and do not immediately retry sending.',
     ];
 
+    /**
+     * Sent notification id.
+     *
+     * @var string
+     */
     protected $notificationId;
 
+    /**
+     * Device token.
+     *
+     * @var string
+     */
     protected $token;
 
+    /**
+     * Device canonical id.
+     *
+     * @var string
+     */
     protected $canonicalId;
 
+    /**
+     * Error code.
+     *
+     * @var string
+     */
     protected $errorCode = null;
 
+    /**
+     * Parse GCM response body.
+     *
+     * @param string $token Device token
+     * @param array  $body  Response body
+     *
+     * @return Response
+     */
     public static function parse($token, array $body)
     {
         $response = new self();
@@ -49,28 +82,67 @@ For all these cases, remove this registration token from the app server and stop
         return $response;
     }
 
+    /**
+     * Gets the value of notificationId.
+     *
+     * @return string
+     */
     public function getNotificationId()
     {
         return $this->notificationId;
     }
 
+    /**
+     * Gets the value of token.
+     *
+     * @return string
+     */
     public function getToken()
     {
         return $this->token;
     }
 
-    public function getOk()
+    /**
+     * Returns if notification was sent ok.
+     *
+     * @return bool
+     */
+    public function getIsOk()
     {
         return is_null($this->errorCode);
     }
 
+    /**
+     * Gets the value of errorCode.
+     *
+     * @return string
+     */
     public function getErrorCode()
     {
         return $this->errorCode;
     }
 
+    /**
+     * Gets the error message if there's any.
+     *
+     * @return string
+     */
     public function getErrorMessage()
     {
+        if (is_null($this->errorCode)) {
+            return '';
+        }
+
         return $this->errorTexts[$this->errorCode];
+    }
+
+    /**
+     * Gets the Device canonical id.
+     *
+     * @return string
+     */
+    public function getCanonicalId()
+    {
+        return $this->canonicalId;
     }
 }

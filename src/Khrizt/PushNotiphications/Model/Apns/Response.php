@@ -2,12 +2,24 @@
 
 namespace Khrizt\PushNotiphications\Model\Apns;
 
-use Khrizt\PushNotiphications\Model\BaseResponse;
 use Khrizt\PushNotiphications\Exception\Apns\InvalidResponseException;
 use Datetime;
+use Khrizt\PushNotiphications\Model\ResponseInterface;
 
-class Response extends BaseResponse
+class Response implements ResponseInterface
 {
+    protected $headers = [];
+
+    protected $notificationId;
+
+    protected $token;
+
+    protected $status;
+
+    protected $timestamp;
+
+    protected $errorCode;
+
     protected $errorTexts = [
         'PayloadEmpty' => 'The message payload was empty.',
         'PayloadTooLarge' => 'The message payload was too large. The maximum payload size is 4096 bytes.',
@@ -34,23 +46,20 @@ class Response extends BaseResponse
         'MissingTopic' => 'The apns-topic header of the request was not specified and was required. The apns-topic header is mandatory when the client is connected using a certificate that supports multiple topics.',
     ];
 
-    protected $notificationId;
-
-    protected $token;
-
-    protected $status;
-
-    protected $timestamp;
-
-    protected $errorCode;
-
-    protected $errorMessage;
-
+    /**
+     * Parse APNS response.
+     *
+     * @param string $token   Device token
+     * @param string $headers Raw headers
+     * @param string $body    Response body
+     *
+     * @return self
+     */
     public static function parse($token, $headers, $body)
     {
         $response = new self();
         $response->token = $token;
-        $response->headers = parent::parseHeaders($headers);
+        $response->headers = self::parseHeaders($headers);
         $response->status = (int) $response->headers['httpCode'];
 
         if ($response->status == 200) {
@@ -77,33 +86,113 @@ class Response extends BaseResponse
         return $response;
     }
 
+    /**
+     * Parse response headers to obtain response status and other fields.
+     *
+     * @param string $rawHeaders Raw headers as returned by response
+     *
+     * @return array
+     */
+    protected static function parseHeaders($rawHeaders)
+    {
+        $headers = [];
+
+        if (!empty($rawHeaders)) {
+            foreach (explode("\r\n", $rawHeaders) as $key => $header) {
+                if ($key === 0) {
+                    // get status from headers
+                    $headers['httpCode'] = trim(str_replace('HTTP/2 ', '', $header));
+                } elseif (!empty(trim($header))) {
+                    list($key, $value) = explode(': ', $header);
+                    $headers[$key] = trim($value);
+                }
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Gets the error message value.
+     *
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        if (is_null($this->errorCode)) {
+            return '';
+        }
+
+        return $this->errorTexts[$this->errorCode];
+    }
+
+    /**
+     * Gets the value of headers.
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Gets the value of notificationId.
+     *
+     * @return string
+     */
     public function getNotificationId()
     {
         return $this->notificationId;
     }
 
+    /**
+     * Gets the value of token.
+     *
+     * @return string
+     */
     public function getToken()
     {
         return $this->token;
     }
 
+    /**
+     * Returns if notification was sent ok.
+     *
+     * @return bool
+     */
+    public function getIsOk()
+    {
+        return $this->status === 200;
+    }
+
+    /**
+     * Gets the value of status.
+     *
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
+    /**
+     * Gets the value of timestamp.
+     *
+     * @return mixed
+     */
     public function getTimestamp()
     {
         return $this->timestamp;
     }
 
+    /**
+     * Gets the value of errorCode.
+     *
+     * @return string
+     */
     public function getErrorCode()
     {
         return $this->errorCode;
-    }
-
-    public function getErrorMessage()
-    {
-        return $this->errorTexts[$this->errorCode];
     }
 }

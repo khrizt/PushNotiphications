@@ -10,15 +10,42 @@ use Khrizt\PushNotiphications\Constants;
 
 class Apns
 {
+    /**
+     * Apple APNS url service
+     *
+     * @var string
+     */
     protected $apnsUrl;
 
+    /**
+     * Connection handler
+     *
+     * @var resource
+     */
     protected $handler;
 
+    /**
+     * Path to certificate
+     *
+     * @var string
+     */
     protected $certificate;
 
-    protected $passPhrase;
+    /**
+     * Certificate passphrase
+     *
+     * @var string
+     */
+    protected $passphrase;
 
-    public function __construct($environment, $certificate, $passPhrase = null)
+    /**
+     * Constructor
+     *
+     * @param string $environment Environment
+     * @param string $certificate Path to certificate
+     * @param string $passphrase  Certificate passphrase
+     */
+    public function __construct($environment, $certificate, $passphrase = null)
     {
         if ($environment == Constants::PRODUCTION) {
             $this->apnsUrl = 'https://api.push.apple.com';
@@ -27,9 +54,17 @@ class Apns
         }
         $this->apnsUrl .= '/3/device/';
         $this->certificate = $certificate;
-        $this->passPhrase = $passPhrase;
+        $this->passphrase = $passphrase;
     }
 
+    /**
+     * Sends notification message to a list of devices.
+     *
+     * @param MessageInterface $message          Notification message
+     * @param Collection       $deviceCollection List of devices
+     *
+     * @return Collection Response collection
+     */
     public function send(MessageInterface $message, Collection $deviceCollection) : Collection
     {
         if (!defined('CURL_HTTP_VERSION_2_0')) {
@@ -48,8 +83,8 @@ class Apns
         curl_setopt($this->handler, CURLOPT_POSTFIELDS, $message->getPayload());
         curl_setopt($this->handler, CURLOPT_HTTPHEADER, $message->getHeaders());
         curl_setopt($this->handler, CURLOPT_SSLCERT, $this->certificate);
-        if (!is_null($this->passPhrase)) {
-            curl_setopt($this->handler, CURLOPT_SSLCERTPASSWD, $this->passPhrase);
+        if (!is_null($this->passphrase)) {
+            curl_setopt($this->handler, CURLOPT_SSLCERTPASSWD, $this->passphrase);
         }
         // curl_setopt($this->handler, CURLOPT_VERBOSE, true);
 
