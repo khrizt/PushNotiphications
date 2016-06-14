@@ -95,6 +95,13 @@ class Message implements MessageInterface
     protected $titleLocaleArguments = [];
 
     /**
+     * Custom data for notification.
+     *
+     * @var array
+     */
+    protected $data = [];
+
+    /**
      * Payload fields names' mapping.
      *
      * @var array
@@ -441,6 +448,42 @@ class Message implements MessageInterface
 
         return $this;
     }
+
+    /**
+     * Sets notification data.
+     *
+     * @param array $data Notification data
+     */
+    public function setData(array $data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Sets a single value in notification data.
+     *
+     * @param string $key   Data key
+     * @param string $value Data value
+     */
+    public function setDataValue(string $key, string $value)
+    {
+        $this->data[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get notification data.
+     *
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
     /**
      * Maps fields to the correspondant APNs name.
      *
@@ -491,6 +534,10 @@ class Message implements MessageInterface
 
         if (empty($payload)) {
             throw new EmptyMessageException();
+        }
+
+        if (count($this->data) > 0) {
+            $payload = array_merge($this->data, $payload);
         }
 
         return $payload;
