@@ -17,26 +17,26 @@ class Gcm extends AbstractClient
     const GCM_URL = 'https://gcm-http.googleapis.com/gcm/send';
 
     /**
-     * GCM Api key
+     * GCM Api key.
      *
      * @var string
      */
     protected $apiKey;
 
     /**
-     * Connection handler
+     * Connection handler.
      *
      * @var resource
      */
     protected $handler;
 
-    public function __construct($apiKey)
+    public function __construct(string $apiKey)
     {
         $this->apiKey = $apiKey;
     }
 
     /**
-     * Sends the notification message to the devices
+     * Sends the notification message to the devices.
      *
      * @param MessageInterface $message          Notification message
      * @param Collection       $deviceCollection List of devices to notify

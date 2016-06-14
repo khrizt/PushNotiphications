@@ -67,7 +67,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return Response
      */
-    public static function parse($token, array $body)
+    public static function parse(string $token, array $body) : Response
     {
         $response = new self();
         $response->notificationId = $body['message_id'];
@@ -87,7 +87,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getNotificationId()
+    public function getNotificationId() : string
     {
         return $this->notificationId;
     }
@@ -97,7 +97,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getToken()
+    public function getToken() : string
     {
         return $this->token;
     }
@@ -107,7 +107,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return bool
      */
-    public function getIsOk()
+    public function getIsOk() : bool
     {
         return is_null($this->errorCode);
     }
@@ -117,7 +117,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getErrorCode()
+    public function getErrorCode() : string
     {
         return $this->errorCode;
     }
@@ -127,7 +127,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getErrorMessage()
+    public function getErrorMessage() : string
     {
         if (is_null($this->errorCode)) {
             return '';
@@ -141,7 +141,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getCanonicalId()
+    public function getCanonicalId() : string
     {
         return $this->canonicalId;
     }

@@ -147,13 +147,13 @@ class PushCommand extends Command
     public function sendGcmNotification(string $token, string $title, string $message, string $apiKey)
     {
         $gcmMessage = new GcmMessage();
-        $gcmMessage->getNotification()->setBody($message);
-        $gcmMessage->setData([
-            'custom' => [
-                'notification_title' => $title,
-            ],
-            'message' => $message,
-        ]);
+        $gcmMessage->setBody($message)
+                   ->setData([
+                        'custom' => [
+                            'notification_title' => $title,
+                        ],
+                        'message' => $message,
+                    ]);
 
         $device = new Device($token);
         $collection = new Collection();

@@ -8,18 +8,53 @@ use Khrizt\PushNotiphications\Model\ResponseInterface;
 
 class Response implements ResponseInterface
 {
+    /**
+     * Response headers.
+     *
+     * @var array
+     */
     protected $headers = [];
 
+    /**
+     * Notification id.
+     *
+     * @var string
+     */
     protected $notificationId;
 
+    /**
+     * Device token.
+     *
+     * @var string
+     */
     protected $token;
 
+    /**
+     * Response http status.
+     *
+     * @var int
+     */
     protected $status;
 
+    /**
+     * The last time the APNS confirmed is no longer active.
+     *
+     * @var Datetime
+     */
     protected $timestamp;
 
+    /**
+     * Response error code.
+     *
+     * @var string
+     */
     protected $errorCode;
 
+    /**
+     * Error descriptions.
+     *
+     * @var string
+     */
     protected $errorTexts = [
         'PayloadEmpty' => 'The message payload was empty.',
         'PayloadTooLarge' => 'The message payload was too large. The maximum payload size is 4096 bytes.',
@@ -55,7 +90,7 @@ class Response implements ResponseInterface
      *
      * @return self
      */
-    public static function parse($token, $headers, $body)
+    public static function parse(string $token, string $headers, string $body) : Response
     {
         $response = new self();
         $response->token = $token;
@@ -93,7 +128,7 @@ class Response implements ResponseInterface
      *
      * @return array
      */
-    protected static function parseHeaders($rawHeaders)
+    protected static function parseHeaders(string $rawHeaders) : array
     {
         $headers = [];
 
@@ -117,7 +152,7 @@ class Response implements ResponseInterface
      *
      * @return string
      */
-    public function getErrorMessage()
+    public function getErrorMessage() : string
     {
         if (is_null($this->errorCode)) {
             return '';
@@ -131,7 +166,7 @@ class Response implements ResponseInterface
      *
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders() : array
     {
         return $this->headers;
     }
@@ -141,7 +176,7 @@ class Response implements ResponseInterface
      *
      * @return string
      */
-    public function getNotificationId()
+    public function getNotificationId() : string
     {
         return $this->notificationId;
     }
@@ -151,7 +186,7 @@ class Response implements ResponseInterface
      *
      * @return string
      */
-    public function getToken()
+    public function getToken() : string
     {
         return $this->token;
     }
@@ -161,7 +196,7 @@ class Response implements ResponseInterface
      *
      * @return bool
      */
-    public function getIsOk()
+    public function getIsOk() : bool
     {
         return $this->status === 200;
     }
@@ -171,7 +206,7 @@ class Response implements ResponseInterface
      *
      * @return int
      */
-    public function getStatus()
+    public function getStatus() : int
     {
         return $this->status;
     }
@@ -181,7 +216,7 @@ class Response implements ResponseInterface
      *
      * @return mixed
      */
-    public function getTimestamp()
+    public function getTimestamp() : Datetime
     {
         return $this->timestamp;
     }
@@ -191,7 +226,7 @@ class Response implements ResponseInterface
      *
      * @return string
      */
-    public function getErrorCode()
+    public function getErrorCode() : string
     {
         return $this->errorCode;
     }

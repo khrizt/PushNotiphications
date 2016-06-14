@@ -24,7 +24,7 @@ class Device
      *
      * @param string $token Token
      */
-    public function __construct($token)
+    public function __construct(string $token)
     {
         $this->token = $token;
     }
@@ -34,7 +34,7 @@ class Device
      *
      * @return string
      */
-    public function getToken()
+    public function getToken() : string
     {
         return $this->token;
     }
@@ -46,7 +46,7 @@ class Device
      *
      * @return \Khrizt\PushNotiphications\Model
      */
-    public function setToken($token)
+    public function setToken(string $token) : Device
     {
         $this->token = $token;
 
@@ -58,7 +58,7 @@ class Device
      *
      * @return int
      */
-    public function getBadge()
+    public function getBadge() : int
     {
         return $this->badge;
     }
@@ -70,7 +70,7 @@ class Device
      *
      * @return self
      */
-    private function _setBadge($badge)
+    private function setBadge(int $badge) : Device
     {
         $this->badge = $badge;
 
@@ -82,7 +82,7 @@ class Device
      *
      * @return string
      */
-    public function getSound()
+    public function getSound() : string
     {
         return $this->sound;
     }
@@ -94,7 +94,7 @@ class Device
      *
      * @return self
      */
-    private function _setSound($sound)
+    private function setSound(string $sound) : Device
     {
         $this->sound = $sound;
 

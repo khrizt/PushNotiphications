@@ -4,10 +4,6 @@ namespace Khrizt\PushNotiphications\Model\Gcm;
 
 use Khrizt\PushNotiphications\Model\Message as MessageInterface;
 
-// https://developers.google.com/cloud-messaging/concept-options
-// //https://developers.google.com/cloud-messaging/http-server-ref
-// 
-
 /**
  * Message object.
  */
@@ -55,6 +51,11 @@ class Message implements MessageInterface
      */
     protected $priority;
 
+    /**
+     * Field mapping for getting GCM field names.
+     *
+     * @var array
+     */
     protected $fieldMapping = [
         'delayWhileIdle' => 'delay_while_idle',
         'collapseKey' => 'collapse_key',
@@ -70,80 +71,179 @@ class Message implements MessageInterface
         $this->notification = new Notification();
     }
 
-    public function setCollapseKey($collapseKey)
+    /**
+     * Sets the title for the message.
+     *
+     * @param string $title Notification title
+     *
+     * @return self
+     */
+    public function setTitle(string $title)
     {
-        if (!is_string($collapseKey)) {
-            throw new \InvalidArgumentException('Collapse key must be a string value');
-        }
+        $this->notification->setTitle($title);
 
-        $this->collapseKey = $collapseKey;
+        return $this;
     }
 
+    /**
+     * Gets message title.
+     *
+     * @return string
+     */
+    public function getTitle() : string
+    {
+        return $this->notification->getTitle();
+    }
+
+    /**
+     * Sets the body for the message.
+     *
+     * @param string $body Notification body
+     *
+     * @return self
+     */
+    public function setBody(string $body)
+    {
+        $this->notification->setTitle($body);
+
+        return $this;
+    }
+
+    /**
+     * Gets message body.
+     *
+     * @return string
+     */
+    public function getBody() : string
+    {
+        return $this->notification->getBody();
+    }
+
+    /**
+     * Sets the icon for the notification.
+     *
+     * @param string $icon Notification icon
+     *
+     * @return self
+     */
+    public function setIcon(string $icon)
+    {
+        $this->notification->setIcon($icon);
+
+        return $this;
+    }
+
+    /**
+     * Gets icon value for notification.
+     * 
+     * @return string
+     */
+    public function getIcon() : string
+    {
+        return $this->notification->getIcon();
+    }
+
+    /**
+     * Sets the collapse key.
+     *
+     * @param string $collapseKey Collapse key
+     *
+     * @return self
+     */
+    public function setCollapseKey(string $collapseKey)
+    {
+        $this->collapseKey = $collapseKey;
+
+        return $this;
+    }
+
+    /**
+     * Get collapse key value.
+     * 
+     * @return string
+     */
     public function getCollapseKey()
     {
         return $this->collapseKey;
     }
 
-    public function setDelayWhileIdle($delayWhileIdle)
+    /**
+     * Sets if message should not be sent until the device becomes active.
+     *
+     * @param bool $delayWhileIdle Delay while idle flag
+     */
+    public function setDelayWhileIdle(bool $delayWhileIdle) : string
     {
-        if (!is_bool($delayWhileIdle)) {
-            throw new \InvalidArgumentException('Delay while idle parameter must be a boolean value');
-        }
-
         $this->delayWhileIdle = $delayWhileIdle;
+
+        return $this;
     }
 
-    public function getDelayWhileIdle()
+    /**
+     * Returns delay while idle value.
+     *
+     * @return bool
+     */
+    public function getDelayWhileIdle() : bool
     {
         return $this->delayWhileIdle;
     }
 
-    public function setTimeToLive($timeToLive)
+    /**
+     * Sets notification time to live.
+     *
+     * @param int $timeToLive Time to live
+     */
+    public function setTimeToLive(int $timeToLive)
     {
-        if (!is_int($timeToLive)) {
-            throw new \InvalidArgumentException('Time to live parameter must be an integer value');
-        }
-
         $this->timeToLive = $timeToLive;
+
+        return $this;
     }
 
-    public function getTimeToLive()
+    /**
+     * Gets time to live value.
+     *
+     * @return int
+     */
+    public function getTimeToLive() : int
     {
         return $this->timeToLive;
     }
 
+    /**
+     * Sets notification data.
+     *
+     * @param array $data Notification data
+     */
     public function setData(array $data)
     {
-        foreach ($data as $key => $value) {
-            /*if (!is_scalar($key) || !is_scalar($value)) {
-                throw new \InvalidArgumentException('Key / value pair '.$key.' / '.$value.' contains non-scalar values');
-            }*/
-        }
         $this->data = $data;
+
+        return $this;
     }
 
-    public function setDataValue($key, $value)
+    /**
+     * Sets a single value in notification data.
+     *
+     * @param string $key   Data key
+     * @param string $value Data value
+     */
+    public function setDataValue(string $key, string $value)
     {
-        if (!is_scalar($key) || !is_scalar($value)) {
-            throw new \InvalidArgumentException('Key and value for notification custom data must be scalar values');
-        }
-
         $this->data[$key] = $value;
+
+        return $this;
     }
 
-    public function getData()
+    /**
+     * Get notification data.
+     *
+     * @return array
+     */
+    public function getData(): array
     {
         return $this->data;
-    }
-
-    public function setNotification(Notification $notification)
-    {
-        $this->notification = $notification;
-    }
-
-    public function getNotification()
-    {
-        return $this->notification;
     }
 
     /**
@@ -153,7 +253,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    protected function mapField($field)
+    protected function mapField(string $field) : string
     {
         if (!array_key_exists($field, $this->fieldMapping)) {
             return;
@@ -162,7 +262,12 @@ class Message implements MessageInterface
         return $this->fieldMapping[$field];
     }
 
-    public function getNoEncodedPayload()
+    /**
+     * Gets payload not encoded.
+     *
+     * @return array
+     */
+    public function getNoEncodedPayload() : array
     {
         $params = get_object_vars($this);
 
@@ -187,7 +292,12 @@ class Message implements MessageInterface
         return $payload;
     }
 
-    public function getPayload()
+    /**
+     * Gets encoded payload.
+     *
+     * @return string
+     */
+    public function getPayload() : string
     {
         return json_encode($this->getNoEncodedPayload());
     }

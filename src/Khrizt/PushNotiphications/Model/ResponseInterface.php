@@ -4,13 +4,13 @@ namespace Khrizt\PushNotiphications\Model;
 
 interface ResponseInterface
 {
-    public function getNotificationId();
+    public function getNotificationId() : string;
 
-    public function getToken();
+    public function getToken() : string;
 
-    public function getIsOk();
+    public function getIsOk() : bool;
 
-    public function getErrorCode();
+    public function getErrorCode() : string;
 
-    public function getErrorMessage();
+    public function getErrorMessage() : string;
 }

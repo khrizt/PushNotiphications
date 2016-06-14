@@ -11,41 +11,41 @@ use Khrizt\PushNotiphications\Constants;
 class Apns
 {
     /**
-     * Apple APNS url service
+     * Apple APNS url service.
      *
      * @var string
      */
     protected $apnsUrl;
 
     /**
-     * Connection handler
+     * Connection handler.
      *
      * @var resource
      */
     protected $handler;
 
     /**
-     * Path to certificate
+     * Path to certificate.
      *
      * @var string
      */
     protected $certificate;
 
     /**
-     * Certificate passphrase
+     * Certificate passphrase.
      *
      * @var string
      */
     protected $passphrase;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $environment Environment
      * @param string $certificate Path to certificate
      * @param string $passphrase  Certificate passphrase
      */
-    public function __construct($environment, $certificate, $passphrase = null)
+    public function __construct(string $environment, string $certificate, string $passphrase = null)
     {
         if ($environment == Constants::PRODUCTION) {
             $this->apnsUrl = 'https://api.push.apple.com';
