@@ -129,7 +129,7 @@ For all these cases, remove this registration token from the app server and stop
      */
     public function getErrorMessage() : string
     {
-        if (is_null($this->errorCode)) {
+        if (empty($this->errorCode)) {
             return '';
         }
 

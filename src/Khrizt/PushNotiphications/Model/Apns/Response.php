@@ -154,7 +154,7 @@ class Response implements ResponseInterface
      */
     public function getErrorMessage() : string
     {
-        if (is_null($this->errorCode)) {
+        if (empty($this->errorCode)) {
             return '';
         }
 
