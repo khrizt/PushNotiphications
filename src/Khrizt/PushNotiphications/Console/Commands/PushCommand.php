@@ -140,7 +140,7 @@ class PushCommand extends Command
         $responseCollection = $client->send($apnsMessage, $collection);
 
         foreach ($responseCollection as $response) {
-            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.$response->getStatus().($response->getStatus() == 200 ?: '. Error message: '.$response->getErrorMessage()));
+            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.($response->getIsOk() ? 'OK' : '. Error message: '.$response->getErrorMessage()));
         }
     }
 
@@ -163,7 +163,7 @@ class PushCommand extends Command
         $responseCollection = $client->send($gcmMessage, $collection);
 
         foreach ($responseCollection as $response) {
-            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.(empty($response->getErrorCode()) ? 'OK' : ' Error. Error message: '.$response->getErrorMessage()));
+            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.($response->getIsOk() ? 'OK' : ' Error. Error message: '.$response->getErrorMessage()));
         }
     }
 }
