@@ -57,7 +57,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @var string
      */
-    protected $errorCode = null;
+    protected $errorCode = '';
 
     /**
      * Parse GCM response body.

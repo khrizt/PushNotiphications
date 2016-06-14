@@ -163,7 +163,7 @@ class PushCommand extends Command
         $responseCollection = $client->send($gcmMessage, $collection);
 
         foreach ($responseCollection as $response) {
-            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.(is_null($response->getErrorCode()) ? 'OK' : ' Error. Error message: '.$response->getErrorMessage()));
+            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.(empty($response->getErrorCode()) ? 'OK' : ' Error. Error message: '.$response->getErrorMessage()));
         }
     }
 }
