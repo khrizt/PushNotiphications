@@ -474,11 +474,11 @@ class Message implements MessageInterface
     }
 
     /**
-     * Create payload for APNs Provider API. Will return JSON encoded data or the body message only.
+     * Creates a non-encoded payload for APNs Provider API.
      *
-     * @return string
+     * @return array
      */
-    public function getPayload() : string
+    public function getNoEncodedPayload() : array
     {
         $params = get_object_vars($this);
 
@@ -493,7 +493,17 @@ class Message implements MessageInterface
             throw new EmptyMessageException();
         }
 
-        return json_encode($payload, JSON_UNESCAPED_UNICODE);
+        return $payload;
+    }
+
+    /**
+     * Create payload for APNs Provider API.
+     *
+     * @return string
+     */
+    public function getPayload() : string
+    {
+        return json_encode($this->getNoEncodedPayload(), JSON_UNESCAPED_UNICODE);
     }
 
     /**

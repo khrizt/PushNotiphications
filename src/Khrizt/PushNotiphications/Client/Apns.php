@@ -76,11 +76,12 @@ class Apns
             $this->handler = curl_init();
         }
 
+        $payload = $message->getNoEncodedPayload();
+
         curl_setopt($this->handler, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
         curl_setopt($this->handler, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->handler, CURLOPT_POST, 1);
         curl_setopt($this->handler, CURLOPT_HEADER, true);
-        curl_setopt($this->handler, CURLOPT_POSTFIELDS, $message->getPayload());
         curl_setopt($this->handler, CURLOPT_HTTPHEADER, $message->getHeaders());
         curl_setopt($this->handler, CURLOPT_SSLCERT, $this->certificate);
         curl_setopt($this->handler, CURLOPT_SSLKEY, $this->certificate);
@@ -93,6 +94,10 @@ class Apns
 
         $responseCollection = new Collection();
         foreach ($deviceCollection as $device) {
+            if ($device->getBadge() > 0) {
+                $payload['aps']['alert']['badge'] = $device->getBadge();
+            }
+            curl_setopt($this->handler, CURLOPT_POSTFIELDS, json_encode($payload, JSON_UNESCAPED_UNICODE));
             curl_setopt($this->handler, CURLOPT_URL, $this->apnsUrl.$device->getToken());
 
             $rawResponse = curl_exec($this->handler);
