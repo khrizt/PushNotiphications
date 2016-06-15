@@ -214,9 +214,9 @@ class Response implements ResponseInterface
     /**
      * Gets the value of timestamp.
      *
-     * @return mixed
+     * @return Datetime|null
      */
-    public function getTimestamp() : Datetime
+    public function getTimestamp()
     {
         return $this->timestamp;
     }
