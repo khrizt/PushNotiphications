@@ -112,9 +112,9 @@ class Response implements ResponseInterface
         $response->errorCode = $decodedBody->reason;
 
         if ($response->status == 410) {
-            $timestamp = Datetime::createFromFormat($decodedBody->timestamp, 'U');
+            $timestamp = Datetime::createFromFormat('U', floor($decodedBody->timestamp / 1000));
             if ($timestamp === false) {
-                throw new InvalidResponseException(json_last_error_msg(), $body);
+                throw new InvalidResponseException('Could not correctly get timestamp from APNS response', $body);
             }
         }
 
