@@ -104,7 +104,7 @@ class Message implements MessageInterface
      */
     public function setBody(string $body)
     {
-        $this->notification->setTitle($body);
+        $this->notification->setBody($body);
 
         return $this;
     }
