@@ -4,7 +4,7 @@
     "keywords": ["apple", "iphone", "apns", "android", "google", "gcm", "fcm", "notification", "message", "push", "pusher", "notiphications"],
     "homepage": "https://github.com/khrizt/PushNotiphications",
     "type": "standalone",
-    "license": "Apache License 2.0",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Christian Fuentes",
