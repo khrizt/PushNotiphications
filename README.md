@@ -9,7 +9,13 @@ Using only cURL as library and Symfony Console for command-line commands this pa
 * PHP Curl and OpenSSL modules
 * cURL with HTTP/2 support (check this for Debian/Ubuntu users: https://serversforhackers.com/video/curl-with-http2-support)
 
-## Example
+## Installation
+
+```
+composer require khrizt/push-notiphications
+```
+
+## Usage example
 
 GCM
 
