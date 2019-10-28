@@ -1,11 +1,11 @@
 # PushNotiphications
-Push notifications library for Apns and Gcm for PHP
+Push notifications library for Apns and Fcm for PHP
 
-Using only cURL as library and Symfony Console for command-line commands this package supports Google Cloud Message (not Firebase Cloud Message yet) and APNS with HTTP/2 mode.
+Using only cURL as library and Symfony Console for command-line commands this package supports Firebase Cloud Message (if you still use GCM, you can use it too) and APNS with HTTP/2 mode.
 
 ## Requirements
 
-* PHP 7.0+
+* PHP 7.1+
 * PHP Curl and OpenSSL modules
 * cURL with HTTP/2 support (check this for Debian/Ubuntu users: https://serversforhackers.com/video/curl-with-http2-support)
 
@@ -14,24 +14,24 @@ Using only cURL as library and Symfony Console for command-line commands this pa
 GCM
 
 ```php
-use Khrizt\PushNotiphications\Client\Gcm;
+use Khrizt\PushNotiphications\Client\Fcm;
 use Khrizt\PushNotiphications\Collection\Collection;
 use Khrizt\PushNotiphications\Model\Device;
-use Khrizt\PushNotiphications\Model\Gcm\Message as GcmMessage;
+use Khrizt\PushNotiphications\Model\Fcm\Message as FcmMessage;
 
-$gcmMessage = new GcmMessage();
-$gcmMessage->setBody($message)
+$fcmMessage = new FcmMessage();
+$fcmMessage->setBody($message)
            ->setTitle($title);
 
 $device = new Device($token);
 $collection = new Collection();
 $collection->append($device);
 
-$client = new Gcm($apiKey);
-$responseCollection = $client->send($gcmMessage, $collection);
+$client = new Fcm($apiKey);
+$responseCollection = $client->send($fcmMessage, $collection);
 
 foreach ($responseCollection as $response) {
-    echo 'Status for notification sent to '.$response->getToken().' was '.($response->getIsOk() ? 'OK' : ' Error. Error message: '.$response->getErrorMessage());
+    echo 'Status for notification sent to '.$response->getToken().' was '.($response->isOk() ? 'OK' : ' Error. Error message: '.$response->getErrorMessage());
 }
 
 ```
@@ -57,7 +57,7 @@ $client = new Apns(Constants::DEVELOPMENT, $certificate, $certificatePassphrase)
 $responseCollection = $client->send($apnsMessage, $collection);
 
 foreach ($responseCollection as $response) {
-    echo 'Status for notification sent to '.$response->getToken().' was '.($response->getIsOk() ? 'OK' : '. Error message: '.$response->getErrorMessage());
+    echo 'Status for notification sent to '.$response->getToken().' was '.($response->isOk() ? 'OK' : '. Error message: '.$response->getErrorMessage());
 }
 
 ```

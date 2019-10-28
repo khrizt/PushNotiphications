@@ -8,12 +8,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Khrizt\PushNotiphications\Client\Apns;
-use Khrizt\PushNotiphications\Client\Gcm;
+use Khrizt\PushNotiphications\Client\Fcm;
 use Khrizt\PushNotiphications\Collection\Collection;
 use Khrizt\PushNotiphications\Constants;
 use Khrizt\PushNotiphications\Model\Device;
 use Khrizt\PushNotiphications\Model\Apns\Message as ApnsMessage;
-use Khrizt\PushNotiphications\Model\Gcm\Message as GcmMessage;
+use Khrizt\PushNotiphications\Model\Fcm\Message as FcmMessage;
 
 /**
  * PushCommand.
@@ -118,7 +118,7 @@ class PushCommand extends Command
         } elseif ($adapter === 'gcm') {
             $apiKey = $input->getOption('apiKey');
             $title = $input->getOption('title');
-            $this->sendGcmNotification($token, $title, $message, $apiKey);
+            $this->sendFcmNotification($token, $title, $message, $apiKey);
         } else {
             throw new \InvalidArgumentException('Adapter '.$adapter.' is not a valid value. Values are: apns and gcm');
         }
@@ -144,9 +144,9 @@ class PushCommand extends Command
         }
     }
 
-    public function sendGcmNotification(string $token, string $title, string $message, string $apiKey)
+    public function sendFcmNotification(string $token, string $title, string $message, string $apiKey)
     {
-        $gcmMessage = new GcmMessage();
+        $gcmMessage = new FcmMessage();
         $gcmMessage->setBody($message)
                    ->setData([
                         'custom' => [
@@ -159,7 +159,7 @@ class PushCommand extends Command
         $collection = new Collection();
         $collection->append($device);
 
-        $client = new Gcm($apiKey);
+        $client = new Fcm($apiKey);
         $responseCollection = $client->send($gcmMessage, $collection);
 
         foreach ($responseCollection as $response) {

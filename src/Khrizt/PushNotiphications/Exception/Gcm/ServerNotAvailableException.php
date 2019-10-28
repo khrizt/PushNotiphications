@@ -1,6 +1,6 @@
 <?php
 
-namespace Khrizt\PushNotiphications\Exception\Gcm;
+namespace Khrizt\PushNotiphications\Exception\Fcm;
 
 use Exception;
 

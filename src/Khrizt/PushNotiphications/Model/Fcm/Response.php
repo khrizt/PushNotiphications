@@ -1,6 +1,6 @@
 <?php
 
-namespace Khrizt\PushNotiphications\Model\Gcm;
+namespace Khrizt\PushNotiphications\Model\Fcm;
 
 use Khrizt\PushNotiphications\Model\ResponseInterface;
 
@@ -60,14 +60,14 @@ For all these cases, remove this registration token from the app server and stop
     protected $errorCode = '';
 
     /**
-     * Parse GCM response body.
+     * Parse FCM response body.
      *
      * @param string $token Device token
      * @param array  $body  Response body
      *
      * @return Response
      */
-    public static function parse(string $token, array $body) : Response
+    public static function parse(string $token, array $body): Response
     {
         $response = new self();
         $response->token = $token;
@@ -89,7 +89,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getNotificationId() : string
+    public function getNotificationId(): string
     {
         return $this->notificationId;
     }
@@ -99,7 +99,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getToken() : string
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -109,7 +109,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return bool
      */
-    public function getIsOk() : bool
+    public function isOk(): bool
     {
         return empty($this->errorCode);
     }
@@ -119,7 +119,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getErrorCode() : string
+    public function getErrorCode(): string
     {
         return $this->errorCode;
     }
@@ -129,7 +129,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getErrorMessage() : string
+    public function getErrorMessage(): string
     {
         if (empty($this->errorCode)) {
             return '';
@@ -143,7 +143,7 @@ For all these cases, remove this registration token from the app server and stop
      *
      * @return string
      */
-    public function getCanonicalId() : string
+    public function getCanonicalId(): string
     {
         return $this->canonicalId;
     }

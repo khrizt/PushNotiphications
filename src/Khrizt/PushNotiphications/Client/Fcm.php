@@ -3,21 +3,21 @@
 namespace Khrizt\PushNotiphications\Client;
 
 use Khrizt\PushNotiphications\Model\Message as MessageInterface;
-use Khrizt\PushNotiphications\Model\Gcm\Response;
-use Khrizt\PushNotiphications\Exception\Gcm\InvalidJsonException;
-use Khrizt\PushNotiphications\Exception\Gcm\AuthenticationException;
-use Khrizt\PushNotiphications\Exception\Gcm\ServerNotAvailableException;
+use Khrizt\PushNotiphications\Model\Fcm\Response;
+use Khrizt\PushNotiphications\Exception\Fcm\InvalidJsonException;
+use Khrizt\PushNotiphications\Exception\Fcm\AuthenticationException;
+use Khrizt\PushNotiphications\Exception\Fcm\ServerNotAvailableException;
 use Khrizt\PushNotiphications\Collection\Collection;
 
-class Gcm extends AbstractClient
+class Fcm extends AbstractClient
 {
     /**
-     * @const string Google Cloud Message URL
+     * @const string Firebase Cloud Message URL
      */
-    const GCM_URL = 'https://gcm-http.googleapis.com/gcm/send';
+    const GCM_URL = 'https://fcm.googleapis.com/fcm/send';
 
     /**
-     * GCM Api key.
+     * FCM Api key.
      *
      * @var string
      */
@@ -105,7 +105,7 @@ class Gcm extends AbstractClient
             }
 
             $headerSize = curl_getinfo($this->handler, CURLINFO_HEADER_SIZE);
-            $responseHeaders = substr($rawResponse, 0, $headerSize);
+            // $responseHeaders = substr($rawResponse, 0, $headerSize);
             $responseBody = substr($rawResponse, $headerSize);
 
             $body = json_decode($responseBody, true);
@@ -124,7 +124,7 @@ class Gcm extends AbstractClient
      *
      * @return self
      */
-    public function setDebug(bool $debug) : Gcm
+    public function setDebug(bool $debug) : Fcm
     {
         $this->debug = $debug;
 
