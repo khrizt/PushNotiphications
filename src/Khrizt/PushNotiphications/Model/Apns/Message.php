@@ -95,6 +95,20 @@ class Message implements MessageInterface
     protected $titleLocaleArguments = [];
 
     /**
+     * Notification category.
+     *
+     * @var string
+     */
+    protected $category;
+
+    /**
+     * Notification mutable-content.
+     *
+     * @var string
+     */
+    protected $mutableContent;
+
+    /**
      * Custom data for notification.
      *
      * @var array
@@ -102,11 +116,11 @@ class Message implements MessageInterface
     protected $data = [];
 
     /**
-     * Payload fields names' mapping.
+     * Payload fields names' mapping for aps.alert key.
      *
      * @var array
      */
-    protected $payloadFieldMapping = [
+    protected $alertPayloadFieldMapping = [
         'title' => 'title',
         'body' => 'body',
         'titleLocaleKey' => 'title-loc-key',
@@ -115,6 +129,16 @@ class Message implements MessageInterface
         'localeKey' => 'loc-key',
         'localeArguments' => 'loc-args',
         'launchImage' => 'launch-image',
+    ];
+
+    /**
+     * Payload fields names' mapping for aps key.
+     *
+     * @var array
+     */
+    protected $apsPayloadFieldMapping = [
+        'category' => 'category',
+        'mutableContent' => 'mutable-content',
     ];
 
     /**
@@ -484,20 +508,60 @@ class Message implements MessageInterface
         return $this->data;
     }
 
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): Message
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getMutableContent(): ?string
+    {
+        return $this->mutableContent;
+    }
+
+    public function setMutableContent(): Message
+    {
+        $this->mutableContent = '1';
+
+        return $this;
+    }
+
     /**
-     * Maps fields to the correspondant APNs name.
+     * Maps fields to the correspondant APNs aps.alert name.
      *
      * @param string $field Field name
      *
      * @return string
      */
-    protected function payloadMapField(string $field): string
+    protected function alertPayloadMapField(string $field): string
     {
-        if (!array_key_exists($field, $this->payloadFieldMapping)) {
+        if (!array_key_exists($field, $this->alertPayloadFieldMapping)) {
             return '';
         }
 
-        return $this->payloadFieldMapping[$field];
+        return $this->alertPayloadFieldMapping[$field];
+    }
+
+    /**
+     * Maps fields to the correspondant APNs aps name.
+     *
+     * @param string $field Field name
+     *
+     * @return string
+     */
+    protected function apsPayloadMapField(string $field): string
+    {
+        if (!array_key_exists($field, $this->apsPayloadFieldMapping)) {
+            return '';
+        }
+
+        return $this->apsPayloadFieldMapping[$field];
     }
 
     /**
@@ -527,8 +591,10 @@ class Message implements MessageInterface
 
         $payload = ['aps' => ['alert' => []]];
         foreach ($params as $key => $value) {
-            if (!is_null($value) && !empty($this->payloadMapField($key))) {
-                $payload['aps']['alert'][$this->payloadMapField($key)] = $value;
+            if (!is_null($value) && !empty($this->alertPayloadMapField($key))) {
+                $payload['aps']['alert'][$this->alertPayloadMapField($key)] = $value;
+            } elseif (!is_null($value) && !empty($this->apsPayloadMapField($key))) {
+                $payload['aps'][$this->apsPayloadMapField($key)] = $value;
             }
         }
 
