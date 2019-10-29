@@ -111,13 +111,6 @@ class Response implements ResponseInterface
 
         $response->errorCode = $decodedBody->reason;
 
-        if ($response->status == 410) {
-            $timestamp = Datetime::createFromFormat('U', floor($decodedBody->timestamp / 1000));
-            if ($timestamp === false) {
-                throw new InvalidResponseException('Could not correctly get timestamp from APNS response', $body);
-            }
-        }
-
         return $response;
     }
 
@@ -199,6 +192,16 @@ class Response implements ResponseInterface
     public function isOk() : bool
     {
         return $this->status === 200;
+    }
+
+    /**
+     * Returns if notification was sent to an unregistered token.
+     *
+     * @return bool
+     */
+    public function isUnregisteredToken(): bool
+    {
+        return $this->status === 410;
     }
 
     /**

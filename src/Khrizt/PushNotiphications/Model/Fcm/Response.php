@@ -115,6 +115,16 @@ For all these cases, remove this registration token from the app server and stop
     }
 
     /**
+     * Returns if notification was sent to an unregistered token.
+     *
+     * @return bool
+     */
+    public function isUnregisteredToken(): bool
+    {
+        return $this->errorCode === 'NotRegistered';
+    }
+
+    /**
      * Gets the value of errorCode.
      *
      * @return string|null
