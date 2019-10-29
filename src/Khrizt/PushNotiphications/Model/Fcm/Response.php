@@ -55,9 +55,9 @@ For all these cases, remove this registration token from the app server and stop
     /**
      * Error code.
      *
-     * @var string
+     * @var string|null
      */
-    protected $errorCode = '';
+    protected $errorCode;
 
     /**
      * Parse FCM response body.
@@ -117,9 +117,9 @@ For all these cases, remove this registration token from the app server and stop
     /**
      * Gets the value of errorCode.
      *
-     * @return string
+     * @return string|null
      */
-    public function getErrorCode(): string
+    public function getErrorCode(): ?string
     {
         return $this->errorCode;
     }

@@ -46,9 +46,9 @@ class Response implements ResponseInterface
     /**
      * Response error code.
      *
-     * @var string
+     * @var string|null
      */
-    protected $errorCode = '';
+    protected $errorCode;
 
     /**
      * Error descriptions.
@@ -224,9 +224,9 @@ class Response implements ResponseInterface
     /**
      * Gets the value of errorCode.
      *
-     * @return string
+     * @return string|null
      */
-    public function getErrorCode() : string
+    public function getErrorCode() : ?string
     {
         return $this->errorCode;
     }

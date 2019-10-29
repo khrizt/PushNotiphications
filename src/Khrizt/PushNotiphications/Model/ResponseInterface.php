@@ -10,7 +10,7 @@ interface ResponseInterface
 
     public function isOk() : bool;
 
-    public function getErrorCode() : string;
+    public function getErrorCode() : ?string;
 
     public function getErrorMessage() : string;
 }

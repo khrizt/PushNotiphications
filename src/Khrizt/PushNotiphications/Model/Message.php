@@ -4,5 +4,5 @@ namespace Khrizt\PushNotiphications\Model;
 
 interface Message
 {
-    public function getPayload();
+    public function getPayload(): string;
 }
