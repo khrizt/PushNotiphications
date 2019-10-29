@@ -196,7 +196,7 @@ class Response implements ResponseInterface
      *
      * @return bool
      */
-    public function getIsOk() : bool
+    public function isOk() : bool
     {
         return $this->status === 200;
     }

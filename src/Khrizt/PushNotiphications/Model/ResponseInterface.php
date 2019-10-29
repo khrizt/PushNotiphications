@@ -8,7 +8,7 @@ interface ResponseInterface
 
     public function getToken() : string;
 
-    public function getIsOk() : bool;
+    public function isOk() : bool;
 
     public function getErrorCode() : string;
 
