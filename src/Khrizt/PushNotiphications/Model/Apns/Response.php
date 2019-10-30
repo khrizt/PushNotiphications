@@ -97,7 +97,7 @@ class Response implements ResponseInterface
         $response->headers = self::parseHeaders($headers);
         $response->status = $response->headers['httpCode'];
 
-        if ($response->status == 200) {
+        if ($response->status === 200) {
             $response->notificationId = $response->headers['apns-id'];
 
             return $response;

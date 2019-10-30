@@ -54,7 +54,7 @@ class Apns
      */
     public function __construct(string $environment, string $certificate, string $passphrase = null)
     {
-        if ($environment == Constants::PRODUCTION) {
+        if ($environment === Constants::PRODUCTION) {
             $this->apnsUrl = 'https://api.push.apple.com';
         } else {
             $this->apnsUrl = 'https://api.development.push.apple.com';

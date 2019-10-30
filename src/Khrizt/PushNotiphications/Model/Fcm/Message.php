@@ -278,7 +278,7 @@ class Message implements MessageInterface
                 if (!empty($notificationPayload)) {
                     $payload[$key] = $this->notification->getNoEncodedPayload();
                 }
-            } elseif ($key === 'data' && count($value) == 0) {
+            } elseif ($key === 'data' && count($value) === 0) {
                 unset($payload['data']);
             } elseif (!empty($this->mapField($key)) && !is_null($value)) {
                 $payload[$this->mapField($key)] = $value;

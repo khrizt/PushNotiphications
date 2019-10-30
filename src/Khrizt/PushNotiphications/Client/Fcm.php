@@ -82,9 +82,9 @@ class Fcm extends AbstractClient
                 }
             }
             $payload = $message->getNoEncodedPayload();
-            if (count($tokens) == 0) {
+            if (count($tokens) === 0) {
                 break;
-            } elseif (count($tokens) == 1) {
+            } elseif (count($tokens) === 1) {
                 $payload['to'] = $tokens[0];
             } else {
                 $payload['registration_ids'] = $tokens;
