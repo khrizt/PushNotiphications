@@ -10,6 +10,8 @@ interface ResponseInterface
 
     public function isUnregisteredToken(): bool;
 
+    public function isInvalidToken(): bool;
+
     public function isOk(): bool;
 
     public function getErrorCode(): ?string;

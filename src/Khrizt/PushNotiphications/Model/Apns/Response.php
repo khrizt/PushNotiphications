@@ -206,6 +206,16 @@ class Response implements ResponseInterface
     }
 
     /**
+     * Returns if notification was sent to an unregistered token.
+     *
+     * @return bool
+     */
+    public function isInvalidToken(): bool
+    {
+        return $this->errorCode === "BadDeviceToken";
+    }
+
+    /**
      * Gets the value of status.
      *
      * @return int
