@@ -168,7 +168,7 @@ class Message implements MessageInterface
      *
      * @param string $notificationId the notification id
      *
-     * @return self
+     * @return Message
      */
     public function setNotificationId(string $notificationId): Message
     {
@@ -192,7 +192,7 @@ class Message implements MessageInterface
      *
      * @param Datetime $expirationTime the expiration time
      *
-     * @return self
+     * @return Message
      */
     public function setExpirationTime(Datetime $expirationTime): Message
     {
@@ -216,7 +216,7 @@ class Message implements MessageInterface
      *
      * @param int $priority the priority
      *
-     * @return self
+     * @return Message
      */
     public function setPriority(int $priority): Message
     {
@@ -244,7 +244,7 @@ class Message implements MessageInterface
      *
      * @param string $topic the topic
      *
-     * @return self
+     * @return Message
      */
     public function setTopic(string $topic): Message
     {
@@ -268,7 +268,7 @@ class Message implements MessageInterface
      *
      * @param string $body
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setBody(string $body): Message
     {
@@ -295,7 +295,7 @@ class Message implements MessageInterface
      *
      * @param string $title
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setTitle(string $title): Message
     {
@@ -322,7 +322,7 @@ class Message implements MessageInterface
      *
      * @param string $key
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setActionLocaleKey(string $key): Message
     {
@@ -349,7 +349,7 @@ class Message implements MessageInterface
      *
      * @param string $key
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setLocaleKey(string $key): Message
     {
@@ -376,7 +376,7 @@ class Message implements MessageInterface
      *
      * @param array $arguments
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setLocaleArguments(array $arguments): Message
     {
@@ -405,7 +405,7 @@ class Message implements MessageInterface
      *
      * @param string $image
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setLaunchImage(string $image): Message
     {
@@ -432,7 +432,7 @@ class Message implements MessageInterface
      *
      * @param string $key
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setTitleLocaleKey(string $key): Message
     {
@@ -459,7 +459,7 @@ class Message implements MessageInterface
      *
      * @param array $arguments
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
     public function setTitleLocaleArguments(array $arguments): Message
     {
@@ -477,8 +477,10 @@ class Message implements MessageInterface
      * Sets notification data.
      *
      * @param array $data Notification data
+     *
+     * @return Message
      */
-    public function setData(array $data)
+    public function setData(array $data): Message
     {
         $this->data = $data;
 
@@ -490,8 +492,10 @@ class Message implements MessageInterface
      *
      * @param string $key   Data key
      * @param string $value Data value
+     *
+     * @return Message
      */
-    public function setDataValue(string $key, string $value)
+    public function setDataValue(string $key, string $value): Message
     {
         $this->data[$key] = $value;
 
@@ -508,11 +512,23 @@ class Message implements MessageInterface
         return $this->data;
     }
 
+    /**
+     * Get message category.
+     *
+     * @return string|null
+     */
     public function getCategory(): ?string
     {
         return $this->category;
     }
 
+    /**
+     * Set message category.
+     *
+     * @param string $category
+     *
+     * @return Message
+     */
     public function setCategory(string $category): Message
     {
         $this->category = $category;
@@ -520,11 +536,21 @@ class Message implements MessageInterface
         return $this;
     }
 
+    /**
+     * Get mutable content.
+     *
+     * @return string|null
+     */
     public function getMutableContent(): ?string
     {
         return $this->mutableContent;
     }
 
+    /**
+     * Set mutable content to 1.
+     *
+     * @return Message
+     */
     public function setMutableContent(): Message
     {
         $this->mutableContent = '1';
@@ -537,15 +563,13 @@ class Message implements MessageInterface
      *
      * @param string $field Field name
      *
-     * @return string
+     * @return string|null
      */
-    protected function alertPayloadMapField(string $field): string
+    protected function alertPayloadMapField(string $field): ?string
     {
-        if (!array_key_exists($field, $this->alertPayloadFieldMapping)) {
-            return '';
-        }
-
-        return $this->alertPayloadFieldMapping[$field];
+        return array_key_exists($field, $this->alertPayloadFieldMapping) ?
+            $this->alertPayloadFieldMapping[$field]:
+            null;
     }
 
     /**
@@ -553,15 +577,13 @@ class Message implements MessageInterface
      *
      * @param string $field Field name
      *
-     * @return string
+     * @return string|null
      */
-    protected function apsPayloadMapField(string $field): string
+    protected function apsPayloadMapField(string $field): ?string
     {
-        if (!array_key_exists($field, $this->apsPayloadFieldMapping)) {
-            return '';
-        }
-
-        return $this->apsPayloadFieldMapping[$field];
+        return array_key_exists($field, $this->apsPayloadFieldMapping) ?
+            $this->apsPayloadFieldMapping[$field]:
+            null;
     }
 
     /**
