@@ -52,7 +52,7 @@ class Message implements MessageInterface
     protected $priority;
 
     /**
-     * Field mapping for getting GCM field names.
+     * Field mapping for getting FCM field names.
      *
      * @var array
      */

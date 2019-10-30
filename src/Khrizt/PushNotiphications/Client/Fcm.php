@@ -14,7 +14,7 @@ class Fcm extends AbstractClient
     /**
      * @const string Firebase Cloud Message URL
      */
-    const GCM_URL = 'https://fcm.googleapis.com/fcm/send';
+    const FCM_URL = 'https://fcm.googleapis.com/fcm/send';
 
     /**
      * FCM Api key.
@@ -65,7 +65,7 @@ class Fcm extends AbstractClient
             'Content-Type: application/json',
         ]);
         curl_setopt($this->handler, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($this->handler, CURLOPT_URL, self::GCM_URL);
+        curl_setopt($this->handler, CURLOPT_URL, self::FCM_URL);
         if ($this->debug) {
             curl_setopt($this->handler, CURLOPT_VERBOSE, true);
         }

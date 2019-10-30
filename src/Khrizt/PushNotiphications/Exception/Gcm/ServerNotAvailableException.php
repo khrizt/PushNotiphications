@@ -12,7 +12,7 @@ class ServerNotAvailableException extends Exception
 
 Timeout. The server couldn\'t process the request in time. Retry the same request, but you must:
 
-    Honor the Retry-After header if it is included in the response from the GCM Connection Server.
+    Honor the Retry-After header if it is included in the response from the FCM Connection Server.
     Implement exponential back-off in your retry mechanism. (e.g. if you waited one second before the first retry, wait at least two second before the next one, then 4 seconds and so on). If you\'re sending multiple messages, delay each one independently by an additional random amount to avoid issuing a new request for all messages at the same time.
 
 Senders that cause problems risk being blacklisted.');

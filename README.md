@@ -17,7 +17,7 @@ composer require khrizt/push-notiphications
 
 ## Usage example
 
-GCM
+FCM
 
 ```php
 use Khrizt\PushNotiphications\Client\Fcm;
