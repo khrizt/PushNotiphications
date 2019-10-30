@@ -127,11 +127,12 @@ class Response implements ResponseInterface
 
         if (!empty($rawHeaders)) {
             foreach (explode("\r\n", $rawHeaders) as $key => $header) {
+                $trimmedHeader = trim($header);
                 if ($key === 0) {
                     // get status from headers
-                    $headers['httpCode'] = (int) substr($header, -3);
-                } elseif (!empty(trim($header))) {
-                    list($key, $value) = explode(':', $header);
+                    $headers['httpCode'] = (int) substr($trimmedHeader, -3);
+                } elseif (!empty($trimmedHeader)) {
+                    list($key, $value) = explode(':', $trimmedHeader);
                     $headers[trim($key)] = trim($value);
                 }
             }
