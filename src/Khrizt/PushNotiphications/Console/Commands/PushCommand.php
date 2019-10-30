@@ -8,12 +8,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Khrizt\PushNotiphications\Client\Apns;
-use Khrizt\PushNotiphications\Client\Gcm;
+use Khrizt\PushNotiphications\Client\Fcm;
 use Khrizt\PushNotiphications\Collection\Collection;
 use Khrizt\PushNotiphications\Constants;
 use Khrizt\PushNotiphications\Model\Device;
 use Khrizt\PushNotiphications\Model\Apns\Message as ApnsMessage;
-use Khrizt\PushNotiphications\Model\Gcm\Message as GcmMessage;
+use Khrizt\PushNotiphications\Model\Fcm\Message as FcmMessage;
 
 /**
  * PushCommand.
@@ -37,7 +37,7 @@ class PushCommand extends Command
             ->addArgument(
                 'adapter',
                 InputArgument::REQUIRED,
-                'Adapter (apns, gcm, specific class name, ...)'
+                'Adapter (apns, fcm, specific class name, ...)'
             )
             ->addArgument(
                 'token',
@@ -48,6 +48,13 @@ class PushCommand extends Command
                 'message',
                 InputArgument::REQUIRED,
                 'Message'
+            )
+            ->addOption(
+                'title',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Title',
+                null
             )
             ->addOption(
                 'certificate',
@@ -69,17 +76,10 @@ class PushCommand extends Command
                 null
             )
             ->addOption(
-                'title',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Title (for GCM adapter)',
-                ''
-            )
-            ->addOption(
                 'apiKey',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'API key (for GCM adapter)'
+                'API key (for FCM adapter)'
             )
             ->addOption(
                 'env',
@@ -105,6 +105,7 @@ class PushCommand extends Command
         $adapter = $input->getArgument('adapter');
         $token = $input->getArgument('token');
         $message = $input->getArgument('message');
+        $title = $input->getOption('title');
 
         if ($adapter === 'apns') {
             $env = $input->getOption('env');
@@ -114,20 +115,29 @@ class PushCommand extends Command
             }
             $certificatePassphrase = $input->getOption('certificatePassphrase');
             $topic = $input->getOption('topic');
-            $this->sendApnsNotification($token, $message, $certificate, $env, $certificatePassphrase, $topic);
-        } elseif ($adapter === 'gcm') {
+            $this->sendApnsNotification($token, $title, $message, $certificate, $env, $certificatePassphrase, $topic);
+        } elseif ($adapter === 'fcm') {
             $apiKey = $input->getOption('apiKey');
-            $title = $input->getOption('title');
-            $this->sendGcmNotification($token, $title, $message, $apiKey);
+            $this->sendFcmNotification($token, $title, $message, $apiKey);
         } else {
-            throw new \InvalidArgumentException('Adapter '.$adapter.' is not a valid value. Values are: apns and gcm');
+            throw new \InvalidArgumentException('Adapter '.$adapter.' is not a valid value. Values are: apns and fcm');
         }
     }
 
-    protected function sendApnsNotification(string $token, string $message, string $certificate, string $env, string $certificatePassphrase = null, string $topic = null)
-    {
+    protected function sendApnsNotification(
+        string $token,
+        ?string $title,
+        string $message,
+        string $certificate,
+        string $env,
+        string $certificatePassphrase = null,
+        string $topic = null
+    ): void {
         $apnsMessage = new ApnsMessage();
         $apnsMessage->setBody($message);
+        if (!is_null($title)) {
+            $apnsMessage->setTitle($title);
+        }
         if (!is_null($topic)) {
             $apnsMessage->setTopic($topic);
         }
@@ -140,30 +150,41 @@ class PushCommand extends Command
         $responseCollection = $client->send($apnsMessage, $collection);
 
         foreach ($responseCollection as $response) {
-            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.($response->getIsOk() ? 'OK' : '. Error message: '.$response->getErrorMessage()));
+            $this->output->writeLn(
+                'Status for notification sent to '.$response->getToken().' was '.
+                ($response->isOk() ? 'OK' : '. Error message: '.$response->getErrorMessage())
+            );
         }
     }
 
-    public function sendGcmNotification(string $token, string $title, string $message, string $apiKey)
-    {
-        $gcmMessage = new GcmMessage();
-        $gcmMessage->setBody($message)
+    public function sendFcmNotification(
+        string $token,
+        ?string $title,
+        string $message,
+        string $apiKey
+    ): void {
+        $fcmMessage = new FcmMessage();
+        $fcmMessage->setBody($message)
                    ->setData([
-                        'custom' => [
-                            'notification_title' => $title,
-                        ],
+                        'title' => $title,
                         'message' => $message,
                     ]);
+        if (!is_null($title)) {
+            $fcmMessage->setTitle($title);
+        }
 
         $device = new Device($token);
         $collection = new Collection();
         $collection->append($device);
 
-        $client = new Gcm($apiKey);
-        $responseCollection = $client->send($gcmMessage, $collection);
+        $client = new Fcm($apiKey);
+        $responseCollection = $client->send($fcmMessage, $collection);
 
         foreach ($responseCollection as $response) {
-            $this->output->writeLn('Status for notification sent to '.$response->getToken().' was '.($response->getIsOk() ? 'OK' : ' Error. Error message: '.$response->getErrorMessage()));
+            $this->output->writeLn(
+                'Status for notification sent to '.$response->getToken().' was '.
+                ($response->isOk() ? 'OK' : ' Error. Error message: '.$response->getErrorMessage())
+            );
         }
     }
 }

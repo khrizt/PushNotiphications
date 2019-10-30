@@ -1,6 +1,6 @@
 <?php
 
-namespace Khrizt\PushNotiphications\Model\Gcm;
+namespace Khrizt\PushNotiphications\Model\Fcm;
 
 use Khrizt\PushNotiphications\Model\Message as MessageInterface;
 
@@ -52,7 +52,7 @@ class Message implements MessageInterface
     protected $priority;
 
     /**
-     * Field mapping for getting GCM field names.
+     * Field mapping for getting FCM field names.
      *
      * @var array
      */
@@ -78,7 +78,7 @@ class Message implements MessageInterface
      *
      * @return self
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): Message
     {
         $this->notification->setTitle($title);
 
@@ -90,7 +90,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getTitle() : string
+    public function getTitle(): string
     {
         return $this->notification->getTitle();
     }
@@ -102,7 +102,7 @@ class Message implements MessageInterface
      *
      * @return self
      */
-    public function setBody(string $body)
+    public function setBody(string $body): Message
     {
         $this->notification->setBody($body);
 
@@ -114,7 +114,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getBody() : string
+    public function getBody(): string
     {
         return $this->notification->getBody();
     }
@@ -126,7 +126,7 @@ class Message implements MessageInterface
      *
      * @return self
      */
-    public function setIcon(string $icon)
+    public function setIcon(string $icon): Message
     {
         $this->notification->setIcon($icon);
 
@@ -135,10 +135,10 @@ class Message implements MessageInterface
 
     /**
      * Gets icon value for notification.
-     * 
+     *
      * @return string
      */
-    public function getIcon() : string
+    public function getIcon(): string
     {
         return $this->notification->getIcon();
     }
@@ -150,7 +150,7 @@ class Message implements MessageInterface
      *
      * @return self
      */
-    public function setCollapseKey(string $collapseKey)
+    public function setCollapseKey(string $collapseKey): Message
     {
         $this->collapseKey = $collapseKey;
 
@@ -159,7 +159,7 @@ class Message implements MessageInterface
 
     /**
      * Get collapse key value.
-     * 
+     *
      * @return string
      */
     public function getCollapseKey()
@@ -172,7 +172,7 @@ class Message implements MessageInterface
      *
      * @param bool $delayWhileIdle Delay while idle flag
      */
-    public function setDelayWhileIdle(bool $delayWhileIdle) : string
+    public function setDelayWhileIdle(bool $delayWhileIdle): Message
     {
         $this->delayWhileIdle = $delayWhileIdle;
 
@@ -184,7 +184,7 @@ class Message implements MessageInterface
      *
      * @return bool
      */
-    public function getDelayWhileIdle() : bool
+    public function isDelayWhileIdle(): bool
     {
         return $this->delayWhileIdle;
     }
@@ -194,7 +194,7 @@ class Message implements MessageInterface
      *
      * @param int $timeToLive Time to live
      */
-    public function setTimeToLive(int $timeToLive)
+    public function setTimeToLive(int $timeToLive): Message
     {
         $this->timeToLive = $timeToLive;
 
@@ -206,7 +206,7 @@ class Message implements MessageInterface
      *
      * @return int
      */
-    public function getTimeToLive() : int
+    public function getTimeToLive(): int
     {
         return $this->timeToLive;
     }
@@ -216,7 +216,7 @@ class Message implements MessageInterface
      *
      * @param array $data Notification data
      */
-    public function setData(array $data)
+    public function setData(array $data): Message
     {
         $this->data = $data;
 
@@ -229,7 +229,7 @@ class Message implements MessageInterface
      * @param string $key   Data key
      * @param string $value Data value
      */
-    public function setDataValue(string $key, string $value)
+    public function setDataValue(string $key, string $value): Message
     {
         $this->data[$key] = $value;
 
@@ -253,7 +253,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    protected function mapField(string $field) : string
+    protected function mapField(string $field): string
     {
         if (!array_key_exists($field, $this->fieldMapping)) {
             return '';
@@ -267,7 +267,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    public function getNoEncodedPayload() : array
+    public function getNoEncodedPayload(): array
     {
         $params = get_object_vars($this);
 
@@ -278,7 +278,7 @@ class Message implements MessageInterface
                 if (!empty($notificationPayload)) {
                     $payload[$key] = $this->notification->getNoEncodedPayload();
                 }
-            } elseif ($key === 'data' && count($value) == 0) {
+            } elseif ($key === 'data' && count($value) === 0) {
                 unset($payload['data']);
             } elseif (!empty($this->mapField($key)) && !is_null($value)) {
                 $payload[$this->mapField($key)] = $value;
@@ -297,7 +297,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getPayload() : string
+    public function getPayload(): string
     {
         return json_encode($this->getNoEncodedPayload());
     }

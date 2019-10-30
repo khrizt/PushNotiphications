@@ -46,9 +46,9 @@ class Response implements ResponseInterface
     /**
      * Response error code.
      *
-     * @var string
+     * @var string|null
      */
-    protected $errorCode = '';
+    protected $errorCode;
 
     /**
      * Error descriptions.
@@ -97,7 +97,7 @@ class Response implements ResponseInterface
         $response->headers = self::parseHeaders($headers);
         $response->status = $response->headers['httpCode'];
 
-        if ($response->status == 200) {
+        if ($response->status === 200) {
             $response->notificationId = $response->headers['apns-id'];
 
             return $response;
@@ -110,13 +110,6 @@ class Response implements ResponseInterface
         }
 
         $response->errorCode = $decodedBody->reason;
-
-        if ($response->status == 410) {
-            $timestamp = Datetime::createFromFormat('U', floor($decodedBody->timestamp / 1000));
-            if ($timestamp === false) {
-                throw new InvalidResponseException('Could not correctly get timestamp from APNS response', $body);
-            }
-        }
 
         return $response;
     }
@@ -134,11 +127,12 @@ class Response implements ResponseInterface
 
         if (!empty($rawHeaders)) {
             foreach (explode("\r\n", $rawHeaders) as $key => $header) {
+                $trimmedHeader = trim($header);
                 if ($key === 0) {
                     // get status from headers
-                    $headers['httpCode'] = (int) substr($header, -3);
-                } elseif (!empty(trim($header))) {
-                    list($key, $value) = explode(':', $header);
+                    $headers['httpCode'] = (int) substr($trimmedHeader, -3);
+                } elseif (!empty($trimmedHeader)) {
+                    list($key, $value) = explode(':', $trimmedHeader);
                     $headers[trim($key)] = trim($value);
                 }
             }
@@ -196,9 +190,29 @@ class Response implements ResponseInterface
      *
      * @return bool
      */
-    public function getIsOk() : bool
+    public function isOk() : bool
     {
         return $this->status === 200;
+    }
+
+    /**
+     * Returns if notification was sent to an unregistered token.
+     *
+     * @return bool
+     */
+    public function isUnregisteredToken(): bool
+    {
+        return $this->status === 410;
+    }
+
+    /**
+     * Returns if notification was sent to an unregistered token.
+     *
+     * @return bool
+     */
+    public function isInvalidToken(): bool
+    {
+        return $this->errorCode === "BadDeviceToken";
     }
 
     /**
@@ -224,9 +238,9 @@ class Response implements ResponseInterface
     /**
      * Gets the value of errorCode.
      *
-     * @return string
+     * @return string|null
      */
-    public function getErrorCode() : string
+    public function getErrorCode() : ?string
     {
         return $this->errorCode;
     }

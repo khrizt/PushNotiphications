@@ -95,6 +95,20 @@ class Message implements MessageInterface
     protected $titleLocaleArguments = [];
 
     /**
+     * Notification category.
+     *
+     * @var string
+     */
+    protected $category;
+
+    /**
+     * Notification mutable-content.
+     *
+     * @var string
+     */
+    protected $mutableContent;
+
+    /**
      * Custom data for notification.
      *
      * @var array
@@ -102,11 +116,11 @@ class Message implements MessageInterface
     protected $data = [];
 
     /**
-     * Payload fields names' mapping.
+     * Payload fields names' mapping for aps.alert key.
      *
      * @var array
      */
-    protected $payloadFieldMapping = [
+    protected $alertPayloadFieldMapping = [
         'title' => 'title',
         'body' => 'body',
         'titleLocaleKey' => 'title-loc-key',
@@ -115,6 +129,16 @@ class Message implements MessageInterface
         'localeKey' => 'loc-key',
         'localeArguments' => 'loc-args',
         'launchImage' => 'launch-image',
+    ];
+
+    /**
+     * Payload fields names' mapping for aps key.
+     *
+     * @var array
+     */
+    protected $apsPayloadFieldMapping = [
+        'category' => 'category',
+        'mutableContent' => 'mutable-content',
     ];
 
     /**
@@ -134,7 +158,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getNotificationId() : string
+    public function getNotificationId(): string
     {
         return $this->notificationId;
     }
@@ -144,9 +168,9 @@ class Message implements MessageInterface
      *
      * @param string $notificationId the notification id
      *
-     * @return self
+     * @return Message
      */
-    public function setNotificationId(string $notificationId) : Message
+    public function setNotificationId(string $notificationId): Message
     {
         $this->notificationId = $notificationId;
 
@@ -158,7 +182,7 @@ class Message implements MessageInterface
      *
      * @return Datetime
      */
-    public function getExpirationTime() : Datetime
+    public function getExpirationTime(): Datetime
     {
         return $this->expirationTime;
     }
@@ -168,9 +192,9 @@ class Message implements MessageInterface
      *
      * @param Datetime $expirationTime the expiration time
      *
-     * @return self
+     * @return Message
      */
-    public function setExpirationTime(Datetime $expirationTime) : Message
+    public function setExpirationTime(Datetime $expirationTime): Message
     {
         $this->expirationTime = $expirationTime;
 
@@ -182,7 +206,7 @@ class Message implements MessageInterface
      *
      * @return int
      */
-    public function getPriority() : int
+    public function getPriority(): int
     {
         return $this->priority;
     }
@@ -192,9 +216,9 @@ class Message implements MessageInterface
      *
      * @param int $priority the priority
      *
-     * @return self
+     * @return Message
      */
-    public function setPriority(int $priority) : Message
+    public function setPriority(int $priority): Message
     {
         if (!in_array($priority, [5, 10])) {
             throw new \InvalidArgumentException('Priority values can only be 5: normal and 10: high');
@@ -210,7 +234,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getTopic() : string
+    public function getTopic(): string
     {
         return $this->topic;
     }
@@ -220,9 +244,9 @@ class Message implements MessageInterface
      *
      * @param string $topic the topic
      *
-     * @return self
+     * @return Message
      */
-    public function setTopic(string $topic) : Message
+    public function setTopic(string $topic): Message
     {
         $this->topic = $topic;
 
@@ -234,7 +258,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getBody() : string
+    public function getBody(): string
     {
         return $this->body;
     }
@@ -244,9 +268,9 @@ class Message implements MessageInterface
      *
      * @param string $body
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setBody(string $body) : Message
+    public function setBody(string $body): Message
     {
         if (empty($body)) {
             throw new \InvalidArgumentException('Message body can not be empty');
@@ -261,7 +285,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getTitle() : string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -271,9 +295,9 @@ class Message implements MessageInterface
      *
      * @param string $title
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setTitle(string $title) : Message
+    public function setTitle(string $title): Message
     {
         if (empty($title)) {
             throw new \InvalidArgumentException('Title can not be empty');
@@ -288,7 +312,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getActionLocaleKey() : string
+    public function getActionLocaleKey(): string
     {
         return $this->actionLocaleKey;
     }
@@ -298,9 +322,9 @@ class Message implements MessageInterface
      *
      * @param string $key
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setActionLocaleKey(string $key) : Message
+    public function setActionLocaleKey(string $key): Message
     {
         if (empty($key)) {
             throw new \InvalidArgumentException('Action locale key can not be empty');
@@ -315,7 +339,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getLocaleKey() : string
+    public function getLocaleKey(): string
     {
         return $this->localeKey;
     }
@@ -325,9 +349,9 @@ class Message implements MessageInterface
      *
      * @param string $key
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setLocaleKey(string $key) : Message
+    public function setLocaleKey(string $key): Message
     {
         if (empty($key)) {
             throw new \InvalidArgumentException('Locale key can not be empty');
@@ -342,7 +366,7 @@ class Message implements MessageInterface
      *
      * @return array|null
      */
-    public function getLocaleArguments() : array
+    public function getLocaleArguments(): array
     {
         return $this->localeArguments;
     }
@@ -352,9 +376,9 @@ class Message implements MessageInterface
      *
      * @param array $arguments
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setLocaleArguments(array $arguments) : Message
+    public function setLocaleArguments(array $arguments): Message
     {
         foreach ($arguments as $a) {
             if (!is_scalar($a)) {
@@ -371,7 +395,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getLaunchImage() : string
+    public function getLaunchImage(): string
     {
         return $this->launchImage;
     }
@@ -381,9 +405,9 @@ class Message implements MessageInterface
      *
      * @param string $image
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setLaunchImage(string $image) : Message
+    public function setLaunchImage(string $image): Message
     {
         if (empty($image)) {
             throw new \InvalidArgumentException('Launch image can not be empty');
@@ -398,7 +422,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getTitleLocaleKey() : string
+    public function getTitleLocaleKey(): string
     {
         return $this->titleLocaleKey;
     }
@@ -408,9 +432,9 @@ class Message implements MessageInterface
      *
      * @param string $key
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setTitleLocaleKey(string $key) : Message
+    public function setTitleLocaleKey(string $key): Message
     {
         if (empty($key)) {
             throw new \InvalidArgumentException('Title locale key can not be empty');
@@ -425,7 +449,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    public function getTitleLocaleArguments() : array
+    public function getTitleLocaleArguments(): array
     {
         return $this->titleLocaleArguments;
     }
@@ -435,9 +459,9 @@ class Message implements MessageInterface
      *
      * @param array $arguments
      *
-     * @return \Khrizt\PushNotiphications\Model\Apns\Message
+     * @return Message
      */
-    public function setTitleLocaleArguments(array $arguments) : Message
+    public function setTitleLocaleArguments(array $arguments): Message
     {
         foreach ($arguments as $a) {
             if (!is_scalar($a)) {
@@ -453,8 +477,10 @@ class Message implements MessageInterface
      * Sets notification data.
      *
      * @param array $data Notification data
+     *
+     * @return Message
      */
-    public function setData(array $data)
+    public function setData(array $data): Message
     {
         $this->data = $data;
 
@@ -466,8 +492,10 @@ class Message implements MessageInterface
      *
      * @param string $key   Data key
      * @param string $value Data value
+     *
+     * @return Message
      */
-    public function setDataValue(string $key, string $value)
+    public function setDataValue(string $key, string $value): Message
     {
         $this->data[$key] = $value;
 
@@ -485,19 +513,77 @@ class Message implements MessageInterface
     }
 
     /**
-     * Maps fields to the correspondant APNs name.
+     * Get message category.
+     *
+     * @return string|null
+     */
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    /**
+     * Set message category.
+     *
+     * @param string $category
+     *
+     * @return Message
+     */
+    public function setCategory(string $category): Message
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get mutable content.
+     *
+     * @return string|null
+     */
+    public function getMutableContent(): ?string
+    {
+        return $this->mutableContent;
+    }
+
+    /**
+     * Set mutable content to 1.
+     *
+     * @return Message
+     */
+    public function setMutableContent(): Message
+    {
+        $this->mutableContent = '1';
+
+        return $this;
+    }
+
+    /**
+     * Maps fields to the correspondant APNs aps.alert name.
      *
      * @param string $field Field name
      *
-     * @return string
+     * @return string|null
      */
-    protected function payloadMapField(string $field) : string
+    protected function alertPayloadMapField(string $field): ?string
     {
-        if (!array_key_exists($field, $this->payloadFieldMapping)) {
-            return '';
-        }
+        return array_key_exists($field, $this->alertPayloadFieldMapping) ?
+            $this->alertPayloadFieldMapping[$field]:
+            null;
+    }
 
-        return $this->payloadFieldMapping[$field];
+    /**
+     * Maps fields to the correspondant APNs aps name.
+     *
+     * @param string $field Field name
+     *
+     * @return string|null
+     */
+    protected function apsPayloadMapField(string $field): ?string
+    {
+        return array_key_exists($field, $this->apsPayloadFieldMapping) ?
+            $this->apsPayloadFieldMapping[$field]:
+            null;
     }
 
     /**
@@ -507,7 +593,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    protected function headersMapField(string $field) : string
+    protected function headersMapField(string $field): string
     {
         if (!array_key_exists($field, $this->headersFieldMapping)) {
             return '';
@@ -521,14 +607,16 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    public function getNoEncodedPayload() : array
+    public function getNoEncodedPayload(): array
     {
         $params = get_object_vars($this);
 
         $payload = ['aps' => ['alert' => []]];
         foreach ($params as $key => $value) {
-            if (!is_null($value) && !empty($this->payloadMapField($key))) {
-                $payload['aps']['alert'][$this->payloadMapField($key)] = $value;
+            if (!is_null($value) && !empty($this->alertPayloadMapField($key))) {
+                $payload['aps']['alert'][$this->alertPayloadMapField($key)] = $value;
+            } elseif (!is_null($value) && !empty($this->apsPayloadMapField($key))) {
+                $payload['aps'][$this->apsPayloadMapField($key)] = $value;
             }
         }
 
@@ -548,7 +636,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getPayload() : string
+    public function getPayload(): string
     {
         return json_encode($this->getNoEncodedPayload(), JSON_UNESCAPED_UNICODE);
     }
@@ -558,7 +646,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    public function getHeaders() : array
+    public function getHeaders(): array
     {
         $params = get_object_vars($this);
 
